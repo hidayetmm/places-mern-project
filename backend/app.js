@@ -3,6 +3,6 @@ const app = express();
 
 const placesRoutes = require("./routes/places-routes");
 
-app.use(placesRoutes);
+app.use("/api/places", placesRoutes);
 
 app.listen(7070);
