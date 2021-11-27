@@ -62,22 +62,35 @@ const createPlace = (req, res, next) => {
 
 const updatePlace = (req, res, next) => {
   const placeId = req.params.pid;
-  const { title, description, coordinates, address } = req.body;
+  const { title, description } = req.body;
 
-  const updatedPlaces = DUMMY_PLACES.map((place) => {
-    if (place.id === placeId) {
-      return { ...place, title, description, coordinates, address };
-    }
-    return place;
-  });
+  const updatedPlace = {
+    ...DUMMY_PLACES.find((place) => place.id === placeId),
+  };
+  updatedPlace.title = title;
+  updatedPlace.description = description;
 
-  DUMMY_PLACES = updatedPlaces;
-  const updatedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
+  const placeIndex = DUMMY_PLACES.findIndex((place) => place.id === placeId);
+  DUMMY_PLACES[placeIndex] = updatedPlace;
 
-  res.status(201).json({ place: updatedPlace });
+  res.status(200).json({ place: updatedPlace });
+};
+
+const deletePlace = (req, res, next) => {
+  const placeId = req.params.pid;
+  const deletedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
+  if (!deletedPlace) {
+    return res
+      .status(404)
+      .json({ message: "Could not find a place with that id." });
+  } else {
+    DUMMY_PLACES = DUMMY_PLACES.filter((place) => place.id !== placeId);
+    res.status(200).json({ message: "Place is deleted." });
+  }
 };
 
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
 exports.createPlace = createPlace;
 exports.updatePlace = updatePlace;
+exports.deletePlace = deletePlace;
