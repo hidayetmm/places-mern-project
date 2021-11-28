@@ -1,3 +1,4 @@
+const HttpError = require("../models/http-error");
 const { v4: uuid } = require("uuid");
 
 let DUMMY_USERS = [
@@ -28,7 +29,7 @@ const createUser = (req, res, next) => {
   if (username && password) {
     const existingUser = DUMMY_USERS.find((user) => user.username === username);
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists." });
+      throw new HttpError("User already exists", 422);
     }
     DUMMY_USERS.push({
       username,
@@ -44,13 +45,13 @@ const createUser = (req, res, next) => {
 const loginUser = (req, res, next) => {
   const { username, password } = req.body;
   if (username && password) {
-    const loggedUser = DUMMY_USERS.find(
+    const identifiedUser = DUMMY_USERS.find(
       (user) => user.username === username && user.password === password
     );
-    if (loggedUser) {
-      return res.status(400).json({ user: loggedUser });
+    if (!identifiedUser || identifiedUser.password !== password) {
+      throw new HttpError("Credentials are wrong.", 401);
     }
-    res.status(404).json({ message: "No user found." });
+    return res.status(200).json({ user: identifiedUser });
   } else {
     res.status(400).json({ message: "Please fill all requirements." });
   }
