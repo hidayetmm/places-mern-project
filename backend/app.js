@@ -5,8 +5,10 @@ const app = express();
 app.use(express.json());
 
 const placesRoutes = require("./routes/places-routes");
+const usersRoutes = require("./routes/users-routes");
 
 app.use("/api/places", placesRoutes);
+app.use("/api/users", usersRoutes);
 
 app.use(() => {
   const error = new HttpError("Could not found this route.", 404);
