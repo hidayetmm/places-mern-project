@@ -24,7 +24,7 @@ const getUserById = (req, res, next) => {
   res.status(200).json({ user });
 };
 
-const createUser = (req, res, next) => {
+const signupUser = (req, res, next) => {
   const { username, password } = req.body;
   if (username && password) {
     const existingUser = DUMMY_USERS.find((user) => user.username === username);
@@ -53,11 +53,11 @@ const loginUser = (req, res, next) => {
     }
     return res.status(200).json({ user: identifiedUser });
   } else {
-    res.status(400).json({ message: "Please fill all requirements." });
+    throw new HttpError("Please fill all requirements.", 400);
   }
 };
 
 exports.getAllUsers = getAllUsers;
 exports.getUserById = getUserById;
-exports.createUser = createUser;
+exports.signupUser = signupUser;
 exports.loginUser = loginUser;
