@@ -52,7 +52,8 @@ const createPlace = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    throw new HttpError("Invalid inputs.", 422);
+    const errorInputs = errors.errors.map((input) => input.param);
+    throw new HttpError(`Invalid input of ${errorInputs}`, 422);
   }
 
   const createdPlace = {
@@ -70,6 +71,11 @@ const createPlace = (req, res, next) => {
 };
 
 const updatePlace = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorInputs = errors.errors.map((input) => input.param);
+    throw new HttpError(`Invalid input of ${errorInputs}`, 422);
+  }
   const placeId = req.params.pid;
   const { title, description } = req.body;
 

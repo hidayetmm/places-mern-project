@@ -1,5 +1,6 @@
 const HttpError = require("../models/http-error");
 const { v4: uuid } = require("uuid");
+const { validationResult } = require("express-validator");
 
 let DUMMY_USERS = [
   { id: "u1", username: "hidayat", password: "password1" },
@@ -26,6 +27,12 @@ const getUserById = (req, res, next) => {
 
 const signupUser = (req, res, next) => {
   const { username, password } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    const errorInputs = errors.errors.map((input) => input.param);
+    throw new HttpError(`Invalid input of ${errorInputs}`, 422);
+  }
   if (username && password) {
     const existingUser = DUMMY_USERS.find((user) => user.username === username);
     if (existingUser) {
