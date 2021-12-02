@@ -1,6 +1,7 @@
 const { v4: uuid } = require("uuid");
 const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
+const { getCoordinatesForAddress } = require("../util/location");
 
 let DUMMY_PLACES = [
   {
@@ -48,7 +49,7 @@ const getPlacesByUserId = (req, res, next) => {
 };
 
 const createPlace = (req, res, next) => {
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -60,14 +61,36 @@ const createPlace = (req, res, next) => {
     id: uuid(),
     title,
     description,
-    coordinates,
     address,
     creator,
   };
 
-  DUMMY_PLACES.push(createdPlace);
+  getCoordinatesForAddress(address).then((response) => {
+    if (
+      response &&
+      response.meta.code === 200 &&
+      response.addresses.length > 0
+    ) {
+      const identifiedAddress = response.addresses[0];
+      const createdPlace = {
+        id: uuid(),
+        title,
+        description,
+        address: identifiedAddress.formattedAddress,
+        coordinates: {
+          latitude: identifiedAddress.latitude,
+          longitude: identifiedAddress.longitude,
+        },
+        creator,
+      };
 
-  res.status(201).json({ place: createdPlace });
+      DUMMY_PLACES.push(createdPlace);
+      console.log(response);
+      res.status(201).json({ place: createdPlace });
+    } else {
+      res.status(400).json({ message: "Please enter a valid address." });
+    }
+  });
 };
 
 const updatePlace = (req, res, next) => {
