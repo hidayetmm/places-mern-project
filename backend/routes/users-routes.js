@@ -9,17 +9,20 @@ const {
   loginUser,
 } = require("../controllers/users-controller");
 
-const userInputs = { username: "username", password: "password" };
-const { username, password } = userInputs;
+const userInputs = { name: "name", email: "email", password: "password" };
+const { name, email, password } = userInputs;
 
 const signupUserValidations = [
-  check(username).isLength({ min: 4, max: 12 }),
-  check(password).isLength({ min: 8 }),
+  check(name).notEmpty(),
+  check(email).normalizeEmail().isEmail(),
+  check(password).isLength({ min: 6 }),
 ];
+
+const loginUserValidations = [check(email).normalizeEmail()];
 
 router.get("/", getAllUsers);
 router.get("/:uid", getUserById);
 router.post("/signup", signupUserValidations, signupUser);
-router.post("/login", loginUser);
+router.post("/login", loginUserValidations, loginUser);
 
 module.exports = router;
