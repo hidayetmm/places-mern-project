@@ -1,7 +1,7 @@
 const { v4: uuid } = require("uuid");
 const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
-const { getCoordinatesForAddress } = require("../util/location");
+const getCoordinatesForAddress = require("../util/location");
 
 let DUMMY_PLACES = [
   {
@@ -48,13 +48,20 @@ const getPlacesByUserId = (req, res, next) => {
   res.json({ userPlaces });
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const { title, description, address, creator } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
     const errorInputs = errors.errors.map((input) => input.param);
-    throw new HttpError(`Invalid input of ${errorInputs}`, 422);
+    next(new HttpError(`Invalid input of ${errorInputs}`, 422));
+  }
+
+  let coordinates;
+  try {
+    coordinates = await getCoordinatesForAddress(address);
+  } catch (error) {
+    return next(error);
   }
 
   const createdPlace = {
@@ -62,35 +69,13 @@ const createPlace = (req, res, next) => {
     title,
     description,
     address,
+    location: coordinates,
     creator,
   };
 
-  getCoordinatesForAddress(address).then((response) => {
-    if (
-      response &&
-      response.meta.code === 200 &&
-      response.addresses.length > 0
-    ) {
-      const identifiedAddress = response.addresses[0];
-      const createdPlace = {
-        id: uuid(),
-        title,
-        description,
-        address: identifiedAddress.formattedAddress,
-        coordinates: {
-          latitude: identifiedAddress.latitude,
-          longitude: identifiedAddress.longitude,
-        },
-        creator,
-      };
-
-      DUMMY_PLACES.push(createdPlace);
-      console.log(response);
-      res.status(201).json({ place: createdPlace });
-    } else {
-      res.status(400).json({ message: "Please enter a valid address." });
-    }
-  });
+  DUMMY_PLACES.push(createdPlace);
+  console.log(coordinates);
+  res.status(201).json({ place: createdPlace });
 };
 
 const updatePlace = (req, res, next) => {
