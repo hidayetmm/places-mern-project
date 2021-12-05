@@ -1,6 +1,6 @@
 const axios = require("axios");
 const HttpError = require("../models/http-error");
-const API_KEY = "prj_test_sk_e8c2d329589a9ace835d049c619cfe741a81f0f4";
+const API_KEY = process.env.RADAR_API_KEY;
 
 async function getCoordinatesForAddress(address) {
   const url = "https://api.radar.io/v1/geocode/forward";
@@ -21,8 +21,8 @@ async function getCoordinatesForAddress(address) {
 
   const identifiedAddress = data.addresses[0];
   const coordinates = {
-    latitude: identifiedAddress.latitude,
-    longitude: identifiedAddress.longitude,
+    lat: identifiedAddress.latitude,
+    lng: identifiedAddress.longitude,
   };
   return coordinates;
 }

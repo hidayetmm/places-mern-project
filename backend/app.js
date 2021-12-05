@@ -1,6 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const HttpError = require("./models/http-error");
 const app = express();
+const mongoose = require("mongoose");
 
 app.use(express.json());
 
@@ -23,4 +25,10 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "An unknown error occured." });
 });
 
-app.listen(7070);
+mongoose
+  .connect(process.env.ATLAS_CLUSTER_CONNECTION_STRING)
+  .then(() => {
+    console.log("Database connection established.");
+    app.listen(7070);
+  })
+  .catch((error) => console.log(error));
