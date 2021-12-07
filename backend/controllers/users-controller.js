@@ -18,22 +18,34 @@ let DUMMY_USERS = [
   },
 ];
 
-const getAllUsers = (req, res, next) => {
-  if (DUMMY_USERS.length < 1) {
-    return res.status(404).json({ message: "Could not found any user." });
+const getAllUsers = async (req, res, next) => {
+  let users;
+  try {
+    users = await User.find({}, "-password");
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, please try again later."
+    );
+    return next(error);
   }
-  res.status(200).json({ users: DUMMY_USERS });
+
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
 
-const getUserById = (req, res, next) => {
+const getUserById = async (req, res, next) => {
   const userId = req.params.uid;
-  const user = DUMMY_USERS.find((user) => user.id === userId);
-  if (!user) {
-    return res
-      .status(404)
-      .json({ message: "Could not find a user with that ID." });
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Could not find a user for the provided id.",
+      404
+    );
+    return next(error);
   }
-  res.status(200).json({ user });
+  res.json({ user });
 };
 
 const signupUser = async (req, res, next) => {
@@ -42,7 +54,7 @@ const signupUser = async (req, res, next) => {
     const errorInputs = errors.errors.map((input) => input.param);
     return next(new HttpError(`Invalid input of ${errorInputs}`, 422));
   }
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
 
   let existingUser;
   try {
@@ -63,7 +75,7 @@ const signupUser = async (req, res, next) => {
     email,
     image: "https://randomuser.me/api/portraits/men/75.jpg",
     password,
-    places,
+    places: [],
   });
   try {
     await createdUser.save();
@@ -77,17 +89,26 @@ const signupUser = async (req, res, next) => {
     .json({ user: createdUser.toObject({ getters: true }) });
 };
 
-const loginUser = (req, res, next) => {
+const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
-  if (email && password) {
-    const identifiedUser = DUMMY_USERS.find((user) => user.email === email);
-    if (!identifiedUser || identifiedUser.password !== password) {
-      throw new HttpError("Credentials are wrong.", 401);
-    }
-    return res.status(200).json({ user: identifiedUser });
-  } else {
-    throw new HttpError("Please fill all requirements.", 400);
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email });
+  } catch (err) {
+    const error = new HttpError(
+      "Logging in failed, please try again later.",
+      500
+    );
+    return next(error);
   }
+  if (!existingUser || existingUser.password !== password) {
+    const error = new HttpError(
+      "Invalid credentials, could not log you in.",
+      401
+    );
+    return next(error);
+  }
+  return res.status(200).json({ message: "Logged in!" });
 };
 
 exports.getAllUsers = getAllUsers;
