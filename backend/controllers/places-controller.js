@@ -36,7 +36,7 @@ const getPlacesByUserId = async (req, res, next) => {
   } catch (err) {
     const error = new HttpError(
       "Fetching places failed, please try again.",
-      494
+      404
     );
     return next(error);
   }
@@ -93,7 +93,7 @@ const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const errorInputs = errors.errors.map((input) => input.param);
-    throw new HttpError(`Invalid input of ${errorInputs}`, 422);
+    return next(new HttpError(`Invalid input of ${errorInputs}`, 422));
   }
   const placeId = req.params.pid;
   const { title, description } = req.body;
