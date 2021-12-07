@@ -6,7 +6,7 @@ const userSchema = new Schema({
   email: { type: String, required: true },
   password: { type: String, required: true, minlength: 6 },
   image: { type: String, required: true },
-  places: [{ type: Types.ObjectId, required: true, ref: "User" }],
+  places: [{ type: Types.ObjectId, required: true, ref: "Place" }],
 });
 
 userSchema.plugin(uniqueValidator);
