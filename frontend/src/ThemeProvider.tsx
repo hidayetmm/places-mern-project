@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from "react";
-import { MantineProvider, ColorScheme } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { ThemeContext } from "./context/ThemeContext";
 
 const ThemeProvider: FC = ({ children }) => {
@@ -9,9 +9,23 @@ const ThemeProvider: FC = ({ children }) => {
   const [dark, setDark] = useState<Boolean>(
     currentHour >= 18 || currentHour <= 6 ? true : false
   );
+
+  const themeStoreHandler = (value: Boolean) => {
+    setDark(value);
+    localStorage.setItem("darkTheme", JSON.stringify(value));
+  };
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("darkTheme");
+    if (storedTheme) {
+      alert(storedTheme);
+      setDark(storedTheme === "dark" ? true : false);
+    }
+  }, []);
+
   return (
     <ThemeContext.Provider
-      value={{ toggleDark: (value: Boolean) => setDark(value) }}
+      value={{ toggleDark: (value: Boolean) => themeStoreHandler(value) }}
     >
       <MantineProvider
         theme={{
