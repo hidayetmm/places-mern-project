@@ -1,0 +1,18 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .switch {
+    flex-direction: row-reverse;
+
+    label {
+      padding-right: 12px;
+      padding-left: 0;
+    }
+
+    span {
+      line-height: 60px;
+    }
+  }
+}
