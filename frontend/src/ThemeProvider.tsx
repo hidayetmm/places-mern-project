@@ -18,10 +18,9 @@ const ThemeProvider: FC = ({ children }) => {
   useEffect(() => {
     const storedTheme = localStorage.getItem("darkTheme");
     if (storedTheme) {
-      alert(storedTheme);
-      setDark(storedTheme === "dark" ? true : false);
+      setDark(storedTheme === "true" ? true : false);
     }
-  }, []);
+  }, [dark]);
 
   return (
     <ThemeContext.Provider

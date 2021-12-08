@@ -1,10 +1,4 @@
-import {
-  AppShell,
-  Navbar,
-  Header,
-  Button,
-  useMantineTheme,
-} from "@mantine/core";
+import { Header, Button, useMantineTheme } from "@mantine/core";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 
