@@ -35,7 +35,7 @@ const HeaderComponent = () => {
   const [loginOrLogout, setLoginOrLogout] = useState<string>("");
   const { colorScheme } = useMantineTheme();
   const { toggleDark } = useContext(ThemeContext);
-  const { userData, setUserData, isLoggedIn } = useContext(AuthContext);
+  const { userData, setUserData } = useContext(AuthContext);
   const notifications = useNotifications();
 
   const signupForm = useForm({
@@ -143,10 +143,20 @@ const HeaderComponent = () => {
     axios
       .post(url, values)
       .then((res: AxiosResponse) => {
-        console.log(res);
+        console.log(res.data.user);
         if (res.status === 200) {
+          setIsModalOpened(false);
+
+          const newUserData = {
+            username: res.data.user.name,
+            email: res.data.user.email,
+            accessToken: "DUMMYACCESSTOKEN",
+            isLoggedIn: true,
+          };
+          setUserData(newUserData);
+
           notifications.showNotification({
-            message: "Welcome!",
+            message: `Welcome @${res.data.user.name}!`,
           });
         }
       })
@@ -172,7 +182,7 @@ const HeaderComponent = () => {
           label={<DarkModeIcon />}
           className={classes.switch}
         />
-        {isLoggedIn ? <LoggedInMenu /> : <LoggedOutMenu />}
+        {userData.isLoggedIn ? <LoggedInMenu /> : <LoggedOutMenu />}
       </Group>
       <Modal
         centered

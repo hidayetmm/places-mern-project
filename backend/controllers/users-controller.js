@@ -92,7 +92,7 @@ const loginUser = async (req, res, next) => {
     );
     return next(error);
   }
-  return res.status(200).json({ message: "Logged in!" });
+  return res.status(200).json({ user: existingUser, message: "Logged in!" });
 };
 
 exports.getAllUsers = getAllUsers;
