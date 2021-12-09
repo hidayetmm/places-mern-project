@@ -26,12 +26,7 @@ const ThemeProvider: FC = ({ children }) => {
     <ThemeContext.Provider
       value={{ toggleDark: (value: Boolean) => themeStoreHandler(value) }}
     >
-      <MantineProvider
-        theme={{
-          fontFamily: "Open Sans",
-          colorScheme: dark ? "dark" : "light",
-        }}
-      >
+      <MantineProvider theme={{ colorScheme: dark ? "dark" : "light" }}>
         {children}
       </MantineProvider>
     </ThemeContext.Provider>
