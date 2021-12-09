@@ -5,13 +5,16 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ThemeProvider from "./ThemeProvider";
 import { BrowserRouter } from "react-router-dom";
+import { NotificationsProvider } from "@mantine/notifications";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <NotificationsProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </NotificationsProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

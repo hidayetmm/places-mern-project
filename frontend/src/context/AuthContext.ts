@@ -15,6 +15,7 @@ export interface AuthContextInterface {
     email: String;
     accessToken: String;
   };
+  isLoggedIn: Boolean;
   setUserData: (value: Object) => void;
   userPlaces: Place[];
 }
@@ -25,6 +26,7 @@ export const defaultState = {
     email: "",
     accessToken: "",
   },
+  isLoggedIn: false,
   setUserData: () => {},
   userPlaces: [],
 };

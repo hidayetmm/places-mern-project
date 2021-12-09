@@ -6,6 +6,8 @@ import {
   defaultState,
 } from "./context/AuthContext";
 import { useState } from "react";
+import PlacesHome from "./containers/PlacesHome/PlacesHome";
+import "./App.css";
 
 function App() {
   const [contextData, setContextData] =
@@ -13,9 +15,11 @@ function App() {
 
   return (
     <AuthProvider value={contextData}>
-      <div>
-        <Header />
-        <Routes></Routes>
+      <Header />
+      <div className="main">
+        <Routes>
+          <Route path="/" element={<PlacesHome />} />
+        </Routes>
       </div>
     </AuthProvider>
   );
