@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@mantine/core";
 import { useContext } from "react";
-import { ThemeContext } from "../context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 import classes from "./Header.module.scss";
 
 const HeaderComponent = () => {

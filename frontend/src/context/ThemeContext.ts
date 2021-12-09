@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
 
 interface ThemeContextInterface {
-	toggleDark: (value: Boolean) => void;
+  toggleDark: (value: Boolean) => void;
 }
-  
+
 const defaultState = {
   toggleDark: () => {},
 };
 
-export const ThemeContext = React.createContext<ThemeContextInterface>(defaultState);
+export const ThemeContext =
+  React.createContext<ThemeContextInterface>(defaultState);
