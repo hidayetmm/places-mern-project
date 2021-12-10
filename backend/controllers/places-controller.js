@@ -5,6 +5,25 @@ const Place = require("../models/place");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 
+const getAllPlaces = async (req, res, next) => {
+  let places;
+  try {
+    places = await Place.find();
+  } catch (err) {
+    const error = new HttpError("Could not find any place.", 404);
+    return next(error);
+  }
+
+  if (!places) {
+    const error = new HttpError("Could not find any place.", 404);
+    return next(error);
+  }
+
+  res.json({
+    places: places.map((place) => place.toObject({ getters: true })),
+  });
+};
+
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
 
@@ -191,6 +210,7 @@ const deletePlace = async (req, res, next) => {
   res.json({ message: "Deleted place." });
 };
 
+exports.getAllPlaces = getAllPlaces;
 exports.getPlaceById = getPlaceById;
 exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;

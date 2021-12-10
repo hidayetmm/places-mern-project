@@ -3,6 +3,7 @@ const router = express.Router();
 const { check } = require("express-validator");
 
 const {
+  getAllPlaces,
   getPlaceById,
   getPlacesByUserId,
   createPlace,
@@ -28,6 +29,7 @@ const updatePlaceValidations = [
   check(placeInputs.description).isLength({ min: 5 }),
 ];
 
+router.get("/", getAllPlaces);
 router.get("/:pid", getPlaceById);
 router.get("/user/:uid", getPlacesByUserId);
 router.post("/", createPlaceValidations, createPlace);

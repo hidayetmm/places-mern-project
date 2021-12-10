@@ -128,8 +128,6 @@ const HeaderComponent = () => {
           setIsModalOpened(true);
           setLoginOrLogout("logout");
         }}
-        variant="gradient"
-        gradient={{ from: "teal", to: "blue", deg: 60 }}
       >
         Signup
       </Button>
@@ -167,6 +165,11 @@ const HeaderComponent = () => {
             message: err.response?.data.message,
             color: "red",
           });
+        } else {
+          notifications.showNotification({
+            message: err.message,
+            color: "red",
+          });
         }
       });
   };
@@ -188,7 +191,7 @@ const HeaderComponent = () => {
         centered
         opened={isModalOpened}
         onClose={() => setIsModalOpened(false)}
-        title="Login"
+        title={loginOrLogout === "login" ? "Login" : "Signup"}
       >
         {loginOrLogout === "login" ? (
           <form onSubmit={loginForm.onSubmit(loginHandler)}>
