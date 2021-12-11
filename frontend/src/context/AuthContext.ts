@@ -5,7 +5,7 @@ export type User = {
   username: String;
   email: String;
   accessToken: String;
-  image: String;
+  image: string;
   isLoggedIn: Boolean;
 };
 

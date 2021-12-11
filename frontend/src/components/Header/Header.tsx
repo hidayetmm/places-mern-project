@@ -33,6 +33,7 @@ import {
 const HeaderComponent = () => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const [loginOrLogout, setLoginOrLogout] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { colorScheme } = useMantineTheme();
   const { toggleDark } = useContext(ThemeContext);
   const { userData, setUserData } = useContext(AuthContext);
@@ -46,7 +47,7 @@ const HeaderComponent = () => {
       // termsOfService: false,
     },
     validationRules: {
-      email: (value) => /^\S+@\S+$/.test(value),
+      email: (value) => /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/.test(value),
     },
   });
 
@@ -57,7 +58,7 @@ const HeaderComponent = () => {
       // termsOfService: false,
     },
     validationRules: {
-      email: (value) => /^\S+@\S+$/.test(value),
+      email: (value) => /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/.test(value),
     },
   });
 
@@ -72,27 +73,18 @@ const HeaderComponent = () => {
         >
           <Group>
             <div>
-              <Text>Hidayat Mammadov</Text>
+              <Text>{userData.username}</Text>
               <Text size="xs" color="gray">
-                hidayetmmdv@gmail.com
+                {userData.email}
               </Text>
             </div>
-            <Avatar
-              src="https://i.pravatar.cc/70?img=67"
-              size={40}
-              color="blue"
-            />
+            <Avatar src={userData.image} size={40} color="blue" />
           </Group>
         </UnstyledButton>
       }
     >
       <Menu.Label>Application</Menu.Label>
-      <Menu.Item
-        styles={{ itemIcon: { border: "1px solid yellow" } }}
-        icon={<UserIcon />}
-      >
-        Profile
-      </Menu.Item>
+      <Menu.Item icon={<UserIcon />}>Profile</Menu.Item>
       <Menu.Item icon={<MessageIcon />}>Messages</Menu.Item>
       <Menu.Item icon={<SettingsIcon />}>Settings</Menu.Item>
       <Menu.Item
@@ -136,11 +128,13 @@ const HeaderComponent = () => {
 
   const loginHandler = (values: { email: string; password: string }) => {
     console.log(values);
+    setLoading(true);
 
     const url = "/users/login";
     axios
       .post(url, values)
       .then((res: AxiosResponse) => {
+        setLoading(false);
         console.log(res.data.user);
         if (res.status === 200) {
           setIsModalOpened(false);
@@ -161,6 +155,7 @@ const HeaderComponent = () => {
         }
       })
       .catch((err: AxiosError) => {
+        setLoading(false);
         console.log(err);
         if (err.response?.status === 401) {
           notifications.showNotification({
@@ -181,6 +176,7 @@ const HeaderComponent = () => {
     email: string;
     password: string;
   }) => {
+    setLoading(true);
     const body = {
       name: values.username,
       email: values.email,
@@ -191,6 +187,7 @@ const HeaderComponent = () => {
     axios
       .post(url, body)
       .then((res: AxiosResponse) => {
+        setLoading(false);
         console.log(res.data.user);
         if (res.data.user) {
           setIsModalOpened(false);
@@ -211,6 +208,7 @@ const HeaderComponent = () => {
         }
       })
       .catch((err: AxiosError) => {
+        setLoading(false);
         console.log(err);
         if (err.response?.data.message) {
           notifications.showNotification({
@@ -264,7 +262,7 @@ const HeaderComponent = () => {
               label="Save the password"
               // {...loginForm.getInputProps("termsOfService", { type: "checkbox" })}
             />
-            <Button style={{ float: "right" }} type="submit">
+            <Button loading={loading} style={{ float: "right" }} type="submit">
               Submit
             </Button>
           </form>
@@ -297,7 +295,7 @@ const HeaderComponent = () => {
               //   type: "checkbox",
               // })}
             />
-            <Button style={{ float: "right" }} type="submit">
+            <Button loading={loading} style={{ float: "right" }} type="submit">
               Submit
             </Button>
           </form>
