@@ -137,7 +137,7 @@ const HeaderComponent = () => {
   const loginHandler = (values: { email: string; password: string }) => {
     console.log(values);
 
-    const url = "http://localhost:7070/api/users/login";
+    const url = "/users/login";
     axios
       .post(url, values)
       .then((res: AxiosResponse) => {
@@ -177,7 +177,6 @@ const HeaderComponent = () => {
   return (
     <Header fixed className={classes.header} height={60} padding="xl">
       <Title order={3}>Places</Title>
-
       <Group spacing="xl">
         <Switch
           checked={colorScheme === "dark" ? true : false}
