@@ -1,6 +1,15 @@
 import React from "react";
 
-type Place = {
+export type User = {
+  id: String;
+  username: String;
+  email: String;
+  accessToken: String;
+  image: String;
+  isLoggedIn: Boolean;
+};
+
+export type Place = {
   title: String;
   description: String;
   image: String;
@@ -10,25 +19,24 @@ type Place = {
 };
 
 export interface AuthContextInterface {
-  userData: {
-    username: String;
-    email: String;
-    accessToken: String;
-    isLoggedIn: Boolean;
-  };
-  setUserData: (value: Object) => void;
+  userData: User;
+  setUserData: (values: User) => void;
   userPlaces: Place[];
+  setUserPlaces: (values: Place[]) => void;
 }
 
 export const defaultState = {
   userData: {
+    id: "",
     username: "",
     email: "",
     accessToken: "",
+    image: "",
     isLoggedIn: false,
   },
   setUserData: () => {},
   userPlaces: [],
+  setUserPlaces: () => {},
 };
 
 export const AuthContext =

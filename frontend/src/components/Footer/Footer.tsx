@@ -21,8 +21,8 @@ const Footer = () => {
       sx={(theme) => ({
         backgroundColor:
           theme.colorScheme === "dark"
-            ? theme.colors.dark[6]
-            : theme.colors.gray[4],
+            ? theme.colors.dark[7]
+            : theme.colors.gray[1],
       })}
     >
       <Container className="footer" size="xl">
@@ -191,7 +191,7 @@ const Footer = () => {
             <Text>M. F. Axundov Kuc. 164 AZ1000</Text>
             <Text>Absheron, Baku</Text>
             <Text>+994 12 4368479</Text>
-            <Group>
+            <Group style={{ paddingTop: 10 }}>
               <ActionIcon variant="filled">
                 <Image src={FacebookIcon} />
               </ActionIcon>

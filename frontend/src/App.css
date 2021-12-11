@@ -6,6 +6,11 @@
   padding: 40px 0 40px 0;
 }
 
+.footer h4 {
+  padding-bottom: 5px;
+}
+
 .footer a {
   display: block;
+  width: fit-content;
 }

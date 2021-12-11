@@ -174,6 +174,54 @@ const HeaderComponent = () => {
       });
   };
 
+  const signupHandler = (values: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    const body = {
+      name: values.username,
+      email: values.email,
+      password: values.password,
+    };
+
+    const url = "/users/signup";
+    axios
+      .post(url, body)
+      .then((res: AxiosResponse) => {
+        console.log(res.data.user);
+        if (res.data.user) {
+          setIsModalOpened(false);
+
+          const newUserData = {
+            username: res.data.user.name,
+            email: res.data.user.email,
+            accessToken: "DUMMYACCESSTOKEN",
+            isLoggedIn: true,
+          };
+          setUserData(newUserData);
+
+          notifications.showNotification({
+            message: `Welcome @${res.data.user.name}!`,
+          });
+        }
+      })
+      .catch((err: AxiosError) => {
+        console.log(err);
+        if (err.response?.data.message) {
+          notifications.showNotification({
+            message: err.response?.data.message,
+            color: "red",
+          });
+        } else {
+          notifications.showNotification({
+            message: err.message,
+            color: "red",
+          });
+        }
+      });
+  };
+
   return (
     <Header fixed className={classes.header} height={60} padding="xl">
       <Title order={3}>Places</Title>
@@ -217,7 +265,7 @@ const HeaderComponent = () => {
             </Button>
           </form>
         ) : (
-          <form onSubmit={signupForm.onSubmit((values) => console.log(values))}>
+          <form onSubmit={signupForm.onSubmit(signupHandler)}>
             <TextInput
               id="0"
               required

@@ -1,6 +1,11 @@
 import Header from "./components/Header/Header";
 import { Routes, Route } from "react-router-dom";
-import { AuthProvider, AuthContextInterface } from "./context/AuthContext";
+import {
+  AuthProvider,
+  AuthContextInterface,
+  User,
+  Place,
+} from "./context/AuthContext";
 import { useState } from "react";
 import PlacesHome from "./containers/PlacesHome/PlacesHome";
 import "./App.css";
@@ -13,17 +18,24 @@ function App() {
 
   const defaultState = {
     userData: {
+      id: "",
       username: "",
       email: "",
       accessToken: "",
+      image: "",
       isLoggedIn: false,
     },
-    setUserData: (values: any) =>
+    setUserData: (values: User): void =>
       setContextData((prevState: AuthContextInterface) => ({
         ...prevState,
         userData: values,
       })),
     userPlaces: [],
+    setUserPlaces: (values: Place[]): void =>
+      setContextData((prevState: AuthContextInterface) => ({
+        ...prevState,
+        userPlaces: values,
+      })),
   };
 
   const [contextData, setContextData] =

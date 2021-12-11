@@ -10,6 +10,7 @@ import {
   Col,
   useMantineTheme,
 } from "@mantine/core";
+import classes from "./PlacesHome.module.scss";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
@@ -43,7 +44,7 @@ const PlacesHome = () => {
   };
 
   return (
-    <Container style={{ paddingTop: 100 }} size="xl">
+    <Container className={classes.container} size="xl">
       <Grid>
         {places.map((place: PlaceType) => (
           <Col key={place.id} span={3}>
