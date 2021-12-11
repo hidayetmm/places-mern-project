@@ -146,9 +146,11 @@ const HeaderComponent = () => {
           setIsModalOpened(false);
 
           const newUserData = {
+            id: res.data.user.id,
             username: res.data.user.name,
             email: res.data.user.email,
             accessToken: "DUMMYACCESSTOKEN",
+            image: res.data.user.image,
             isLoggedIn: true,
           };
           setUserData(newUserData);
@@ -194,9 +196,11 @@ const HeaderComponent = () => {
           setIsModalOpened(false);
 
           const newUserData = {
+            id: res.data.user.id,
             username: res.data.user.name,
             email: res.data.user.email,
             accessToken: "DUMMYACCESSTOKEN",
+            image: res.data.user.image,
             isLoggedIn: true,
           };
           setUserData(newUserData);
