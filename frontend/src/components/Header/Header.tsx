@@ -14,6 +14,7 @@ import {
   TextInput,
   Checkbox,
 } from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useNotifications } from "@mantine/notifications";
 import { useForm } from "@mantine/hooks";
 import axios, { AxiosResponse, AxiosError } from "axios";
@@ -28,6 +29,7 @@ import {
   SettingsIcon,
   SearchIcon,
   LogoutIcon,
+  UserImageIcon,
 } from "./Icons";
 import { useNavigate } from "react-router-dom";
 
@@ -45,6 +47,7 @@ const HeaderComponent = () => {
       username: "",
       email: "",
       password: "",
+      image: File,
       // termsOfService: false,
     },
     validationRules: {
@@ -183,6 +186,12 @@ const HeaderComponent = () => {
     password: string;
   }) => {
     setLoading(true);
+
+    const formData = new FormData();
+    formData.append("name", values.username);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+    formData.append("image", "values.password");
     const body = {
       name: values.username,
       email: values.email,
@@ -295,6 +304,33 @@ const HeaderComponent = () => {
               label="Password"
               {...signupForm.getInputProps("password")}
             />
+            <Group>
+              <Dropzone
+                styles={{
+                  root: {
+                    maxWidth: 60,
+                    maxHeight: 60,
+                  },
+                }}
+                onDrop={console.log}
+                maxSize={3 * 1024 ** 2}
+                accept={IMAGE_MIME_TYPE}
+              >
+                {(status) => (
+                  <UserImageIcon
+                  // status={status}
+                  // style={{
+                  //   width: 80,
+                  //   height: 80,
+                  //   color: getIconColor(status, theme),
+                  // }}
+                  />
+                )}
+              </Dropzone>
+              <Text size="sm" color="dimmed">
+                Upload your profile image, just drop
+              </Text>
+            </Group>
             <Checkbox
               mt="md"
               label="Save the password"

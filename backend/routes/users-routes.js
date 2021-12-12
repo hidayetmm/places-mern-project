@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
+const fileUpload = require("../middleware/file-upload");
 
 const {
   getAllUsers,
@@ -22,7 +23,12 @@ const loginUserValidations = [check(email).normalizeEmail()];
 
 router.get("/", getAllUsers);
 router.get("/:uid", getUserById);
-router.post("/signup", signupUserValidations, signupUser);
+router.post(
+  "/signup",
+  fileUpload.single("image"),
+  signupUserValidations,
+  signupUser
+);
 router.post("/login", loginUserValidations, loginUser);
 
 module.exports = router;

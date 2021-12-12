@@ -17,3 +17,6 @@ export const SearchIcon = () => (
 export const LogoutIcon = () => (
   <span className="material-icons-outlined">logout</span>
 );
+export const UserImageIcon = () => (
+  <span className="material-icons-outlined">account_circle</span>
+);
