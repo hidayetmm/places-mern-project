@@ -35,6 +35,7 @@ import { useNavigate } from "react-router-dom";
 
 const HeaderComponent = () => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const [profileImage, setProfileImage] = useState<File[]>();
   const [loginOrLogout, setLoginOrLogout] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const { colorScheme } = useMantineTheme();
@@ -47,7 +48,6 @@ const HeaderComponent = () => {
       username: "",
       email: "",
       password: "",
-      image: File,
       // termsOfService: false,
     },
     validationRules: {
@@ -191,7 +191,9 @@ const HeaderComponent = () => {
     formData.append("name", values.username);
     formData.append("email", values.email);
     formData.append("password", values.password);
-    formData.append("image", "values.password");
+    if (profileImage) {
+      formData.append("image", profileImage[0]);
+    }
     const body = {
       name: values.username,
       email: values.email,
@@ -200,7 +202,7 @@ const HeaderComponent = () => {
 
     const url = "/users/signup";
     axios
-      .post(url, body)
+      .post(url, formData)
       .then((res: AxiosResponse) => {
         setLoading(false);
         console.log(res.data.user);
@@ -306,13 +308,14 @@ const HeaderComponent = () => {
             />
             <Group>
               <Dropzone
+                multiple={false}
                 styles={{
                   root: {
                     maxWidth: 60,
                     maxHeight: 60,
                   },
                 }}
-                onDrop={console.log}
+                onDrop={(files) => setProfileImage(files)}
                 maxSize={3 * 1024 ** 2}
                 accept={IMAGE_MIME_TYPE}
               >
