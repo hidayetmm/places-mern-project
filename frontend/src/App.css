@@ -14,3 +14,7 @@
   display: block;
   width: fit-content;
 }
+
+body {
+  background-color: #000000;
+}

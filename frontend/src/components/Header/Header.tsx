@@ -18,7 +18,7 @@ import { useNotifications } from "@mantine/notifications";
 import { useForm } from "@mantine/hooks";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { useState, useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext, defaultState } from "../../context/AuthContext";
 import { ThemeContext } from "../../context/ThemeContext";
 import classes from "./Header.module.scss";
 import {
@@ -29,6 +29,7 @@ import {
   SearchIcon,
   LogoutIcon,
 } from "./Icons";
+import { useNavigate } from "react-router-dom";
 
 const HeaderComponent = () => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
@@ -61,6 +62,13 @@ const HeaderComponent = () => {
       email: (value) => /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/.test(value),
     },
   });
+
+  const navigate = useNavigate();
+  const logoutHandler = () => {
+    setUserData(defaultState.userData);
+    localStorage.removeItem("userData");
+    navigate("/");
+  };
 
   const LoggedInMenu = () => (
     <Menu
@@ -99,7 +107,7 @@ const HeaderComponent = () => {
       </Menu.Item>
       <Divider />
       <Menu.Label>Danger zone</Menu.Label>
-      <Menu.Item color="red" icon={<LogoutIcon />}>
+      <Menu.Item color="red" icon={<LogoutIcon />} onClick={logoutHandler}>
         Log out
       </Menu.Item>
     </Menu>
@@ -126,49 +134,47 @@ const HeaderComponent = () => {
     </>
   );
 
-  const loginHandler = (values: { email: string; password: string }) => {
+  const loginHandler = async (values: { email: string; password: string }) => {
     console.log(values);
     setLoading(true);
 
     const url = "/users/login";
-    axios
-      .post(url, values)
-      .then((res: AxiosResponse) => {
-        setLoading(false);
-        console.log(res.data.user);
-        if (res.status === 200) {
-          setIsModalOpened(false);
 
-          const newUserData = {
-            id: res.data.user.id,
-            username: res.data.user.name,
-            email: res.data.user.email,
-            accessToken: "DUMMYACCESSTOKEN",
-            image: res.data.user.image,
-            isLoggedIn: true,
-          };
-          setUserData(newUserData);
+    try {
+      const response: AxiosResponse = await axios.post(url, values);
+      setLoading(false);
+      console.log(response.data.user);
+      setIsModalOpened(false);
 
-          notifications.showNotification({
-            message: `Welcome @${res.data.user.name}!`,
-          });
-        }
-      })
-      .catch((err: AxiosError) => {
-        setLoading(false);
-        console.log(err);
-        if (err.response?.status === 401) {
-          notifications.showNotification({
-            message: err.response?.data.message,
-            color: "red",
-          });
-        } else {
-          notifications.showNotification({
-            message: err.message,
-            color: "red",
-          });
-        }
+      const newUserData = {
+        id: response.data.user.id,
+        username: response.data.user.name,
+        email: response.data.user.email,
+        accessToken: "DUMMYACCESSTOKEN",
+        image: response.data.user.image,
+        isLoggedIn: true,
+      };
+      setUserData(newUserData);
+      localStorage.setItem("userData", JSON.stringify(newUserData));
+
+      notifications.showNotification({
+        message: `Welcome @${response.data.user.name}!`,
       });
+    } catch (err: AxiosError | any) {
+      if (axios.isAxiosError(err)) {
+        setLoading(false);
+        console.log(err?.response);
+        notifications.showNotification({
+          message: err.response?.data.message,
+          color: "red",
+        });
+      } else {
+        notifications.showNotification({
+          message: err?.message,
+          color: "red",
+        });
+      }
+    }
   };
 
   const signupHandler = (values: {
@@ -201,6 +207,7 @@ const HeaderComponent = () => {
             isLoggedIn: true,
           };
           setUserData(newUserData);
+          localStorage.setItem("userData", JSON.stringify(newUserData));
 
           notifications.showNotification({
             message: `Welcome @${res.data.user.name}!`,

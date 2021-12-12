@@ -6,25 +6,30 @@ import {
   User,
   Place,
 } from "./context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PlacesHome from "./containers/PlacesHome/PlacesHome";
 import "./App.css";
 import Axios from "axios";
-import { AppShell } from "@mantine/core";
+import { AppShell, useMantineTheme } from "@mantine/core";
 import Footer from "./components/Footer/Footer";
+import Profile from "./containers/Profile/Profile";
 
 function App() {
   Axios.defaults.baseURL = "http://localhost:7070/api/";
 
+  const storedUserData = localStorage.getItem("userData");
+
   const defaultState = {
-    userData: {
-      id: "",
-      username: "",
-      email: "",
-      accessToken: "",
-      image: "",
-      isLoggedIn: false,
-    },
+    userData: storedUserData
+      ? JSON.parse(storedUserData)
+      : {
+          id: "",
+          username: "",
+          email: "",
+          accessToken: "",
+          image: "",
+          isLoggedIn: false,
+        },
     setUserData: (values: User): void =>
       setContextData((prevState: AuthContextInterface) => ({
         ...prevState,
@@ -40,6 +45,15 @@ function App() {
 
   const [contextData, setContextData] =
     useState<AuthContextInterface>(defaultState);
+
+  const { colorScheme, colors } = useMantineTheme();
+  useEffect(() => {
+    if (colorScheme === "dark") {
+      document.body.style.backgroundColor = colors.dark[8];
+    } else if (colorScheme === "light") {
+      document.body.style.backgroundColor = colors.gray[0];
+    }
+  }, [colorScheme]);
 
   return (
     <AuthProvider value={contextData}>
@@ -58,6 +72,7 @@ function App() {
         <div className="main">
           <Routes>
             <Route path="/" element={<PlacesHome />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
         <Footer />

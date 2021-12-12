@@ -55,7 +55,7 @@ const Footer = () => {
                 },
               })}
               component={Link}
-              to="about"
+              to="profile"
             >
               Account
             </Anchor>
