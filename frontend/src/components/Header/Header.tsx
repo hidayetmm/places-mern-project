@@ -2,7 +2,6 @@ import {
   Header,
   Title,
   useMantineTheme,
-  Switch,
   UnstyledButton,
   Group,
   Text,
@@ -13,6 +12,7 @@ import {
   Modal,
   TextInput,
   Checkbox,
+  ActionIcon,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useNotifications } from "@mantine/notifications";
@@ -24,17 +24,23 @@ import { ThemeContext } from "../../context/ThemeContext";
 import classes from "./Header.module.scss";
 import {
   DarkModeIcon,
+  LightModeIcon,
   UserIcon,
   MessageIcon,
   SettingsIcon,
   SearchIcon,
   LogoutIcon,
   UserImageIcon,
+  AddIcon,
 } from "./Icons";
 import { useNavigate } from "react-router-dom";
+import AddPlaceModal from "./AddPlaceModal";
 
 const HeaderComponent = () => {
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const [isLoginLogoutModalOpened, setIsLoginLogoutModalOpened] =
+    useState<boolean>(false);
+  const [isAddPlaceModalOpened, setIsAddPlaceModalOpened] =
+    useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<File[]>();
   const [loginOrLogout, setLoginOrLogout] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -82,8 +88,16 @@ const HeaderComponent = () => {
         <UnstyledButton
           onClick={() => console.log("try focusing button with tab")}
           sx={(theme) => ({
+            img: {
+              transition: "all 150ms ease",
+            },
+            "&:hover": {
+              img: {
+                filter: "brightness(1.1)",
+              },
+            },
             "div:nth-last-child(-n+2)": {
-              transition: "color 150ms",
+              transition: "color 150ms ease",
               "&:hover": {
                 "div:nth-last-child(-n+2)": {
                   color:
@@ -133,7 +147,7 @@ const HeaderComponent = () => {
     <>
       <Button
         onClick={() => {
-          setIsModalOpened(true);
+          setIsLoginLogoutModalOpened(true);
           setLoginOrLogout("login");
         }}
       >
@@ -141,7 +155,7 @@ const HeaderComponent = () => {
       </Button>
       <Button
         onClick={() => {
-          setIsModalOpened(true);
+          setIsLoginLogoutModalOpened(true);
           setLoginOrLogout("logout");
         }}
       >
@@ -160,7 +174,7 @@ const HeaderComponent = () => {
       const response: AxiosResponse = await axios.post(url, values);
       setLoading(false);
       console.log(response.data.user);
-      setIsModalOpened(false);
+      setIsLoginLogoutModalOpened(false);
 
       const newUserData = {
         id: response.data.user.id,
@@ -220,7 +234,7 @@ const HeaderComponent = () => {
         setLoading(false);
         console.log(res.data.user);
         if (res.data.user) {
-          setIsModalOpened(false);
+          setIsLoginLogoutModalOpened(false);
 
           const newUserData = {
             id: res.data.user.id,
@@ -259,18 +273,22 @@ const HeaderComponent = () => {
     <Header fixed className={classes.header} height={60} padding="xl">
       <Title order={3}>Places</Title>
       <Group spacing="xl">
-        <Switch
-          checked={colorScheme === "dark" ? true : false}
-          onChange={() => toggleDark(colorScheme === "light" ? true : false)}
-          label={<DarkModeIcon />}
-          className={classes.switch}
-        />
+        <ActionIcon
+          onClick={() => toggleDark(colorScheme === "light" ? true : false)}
+        >
+          {colorScheme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+        </ActionIcon>
+        {userData.isLoggedIn && (
+          <ActionIcon onClick={() => setIsAddPlaceModalOpened(true)}>
+            <AddIcon />
+          </ActionIcon>
+        )}
         {userData.isLoggedIn ? <LoggedInMenu /> : <LoggedOutMenu />}
       </Group>
       <Modal
         centered
-        opened={isModalOpened}
-        onClose={() => setIsModalOpened(false)}
+        opened={isLoginLogoutModalOpened}
+        onClose={() => setIsLoginLogoutModalOpened(false)}
         title={loginOrLogout === "login" ? "Login" : "Signup"}
       >
         {loginOrLogout === "login" ? (
@@ -359,6 +377,15 @@ const HeaderComponent = () => {
             </Button>
           </form>
         )}
+      </Modal>
+      {/* Add Place modal */}
+      <Modal
+        centered
+        title="Add a place"
+        opened={isAddPlaceModalOpened}
+        onClose={() => setIsAddPlaceModalOpened(false)}
+      >
+        <AddPlaceModal setIsAddPlaceModalOpened={setIsAddPlaceModalOpened} />
       </Modal>
     </Header>
   );

@@ -2,6 +2,9 @@
 export const DarkModeIcon = () => (
   <span className="material-icons-outlined">dark_mode</span>
 );
+export const LightModeIcon = () => (
+  <span class="material-icons-outlined">light_mode</span>
+);
 export const UserIcon = () => (
   <span className="material-icons-outlined">person</span>
 );
@@ -19,4 +22,7 @@ export const LogoutIcon = () => (
 );
 export const UserImageIcon = () => (
   <span className="material-icons-outlined">account_circle</span>
+);
+export const AddIcon = () => (
+  <span className="material-icons-outlined">add_box</span>
 );
