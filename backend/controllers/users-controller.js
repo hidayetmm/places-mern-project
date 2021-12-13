@@ -57,7 +57,7 @@ const signupUser = async (req, res, next) => {
   const createdUser = User({
     name,
     email,
-    image: "https://randomuser.me/api/portraits/men/75.jpg",
+    image: "http://localhost:7070/" + req.file.path,
     password,
     places: [],
   });

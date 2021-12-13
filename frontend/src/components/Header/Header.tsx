@@ -81,6 +81,19 @@ const HeaderComponent = () => {
       control={
         <UnstyledButton
           onClick={() => console.log("try focusing button with tab")}
+          sx={(theme) => ({
+            "div:nth-last-child(-n+2)": {
+              transition: "color 150ms",
+              "&:hover": {
+                "div:nth-last-child(-n+2)": {
+                  color:
+                    theme.colorScheme === "dark"
+                      ? theme.colors.gray[4]
+                      : theme.colors.gray[1],
+                },
+              },
+            },
+          })}
         >
           <Group>
             <div>
