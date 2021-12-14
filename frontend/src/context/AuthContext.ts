@@ -24,6 +24,8 @@ export interface AuthContextInterface {
   setUserData: (values: User) => void;
   places: Place[];
   setPlaces: (values: Place[]) => void;
+  fetchPlacesToggle: boolean;
+  setFetchPlacesToggle: () => void;
   userPlaces: Place[];
   setUserPlaces: (values: Place[]) => void;
 }
@@ -40,6 +42,8 @@ export const defaultState = {
   setUserData: () => {},
   places: [],
   setPlaces: () => {},
+  fetchPlacesToggle: false,
+  setFetchPlacesToggle: () => {},
   userPlaces: [],
   setUserPlaces: () => {},
 };

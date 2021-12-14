@@ -13,7 +13,7 @@ const AddPlaceModal: FC<{
 }> = ({ setIsAddPlaceModalOpened }) => {
   const [placeImage, setPlaceImage] = useState<File[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const { userData } = useContext(AuthContext);
+  const { userData, setFetchPlacesToggle } = useContext(AuthContext);
 
   const notifications = useNotifications();
 
@@ -49,6 +49,7 @@ const AddPlaceModal: FC<{
       .post(url, formData)
       .then((res: AxiosResponse) => {
         setLoading(false);
+        setFetchPlacesToggle();
         console.log(res);
         if (res.data.place) {
           setIsAddPlaceModalOpened(false);
