@@ -73,13 +73,13 @@ const getPlacesByUserId = async (req, res, next) => {
 };
 
 const createPlace = async (req, res, next) => {
-  const { title, description, address, creator } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
     const errorInputs = errors.errors.map((input) => input.param);
-    next(new HttpError(`Invalid input of ${errorInputs}`, 422));
+    return next(new HttpError(`Invalid input of ${errorInputs}`, 422));
   }
+  const { title, description, address, creator } = req.body;
 
   let coordinates;
   try {
@@ -93,8 +93,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image:
-      "https://www.edreams.com/blog/wp-content/uploads/sites/3/2013/07/shutterstock_168497345.jpg",
+    image: "http://localhost:7070/" + req.file.path,
     creator,
   });
 

@@ -380,6 +380,7 @@ const HeaderComponent = () => {
       </Modal>
       {/* Add Place modal */}
       <Modal
+        size="xl"
         centered
         title="Add a place"
         opened={isAddPlaceModalOpened}

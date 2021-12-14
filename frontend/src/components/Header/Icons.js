@@ -26,3 +26,6 @@ export const UserImageIcon = () => (
 export const AddIcon = () => (
   <span className="material-icons-outlined">add_box</span>
 );
+export const PlaceIcon = () => (
+  <span className="material-icons-outlined">image</span>
+);

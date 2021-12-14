@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
+const fileUpload = require("../middleware/file-upload");
 
 const {
   getAllPlaces,
@@ -32,7 +33,12 @@ const updatePlaceValidations = [
 router.get("/", getAllPlaces);
 router.get("/:pid", getPlaceById);
 router.get("/user/:uid", getPlacesByUserId);
-router.post("/", createPlaceValidations, createPlace);
+router.post(
+  "/",
+  fileUpload.single("image"),
+  createPlaceValidations,
+  createPlace
+);
 router.patch("/:pid", updatePlaceValidations, updatePlace);
 router.delete("/:pid", deletePlace);
 

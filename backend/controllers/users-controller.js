@@ -54,10 +54,13 @@ const signupUser = async (req, res, next) => {
     );
     return next(error);
   }
+
   const createdUser = User({
     name,
     email,
-    image: "http://localhost:7070/" + req.file.path,
+    image: req.file
+      ? "http://localhost:7070/" + req.file.path
+      : "http://localhost:7070/uploads/images/default-user.png",
     password,
     places: [],
   });

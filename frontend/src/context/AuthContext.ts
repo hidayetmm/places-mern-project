@@ -1,21 +1,21 @@
 import React from "react";
 
 export type User = {
-  id: String;
-  username: String;
-  email: String;
-  accessToken: String;
+  id: string;
+  username: string;
+  email: string;
+  accessToken: string;
   image: string;
   isLoggedIn: Boolean;
 };
 
 export type Place = {
-  title: String;
-  description: String;
-  image: String;
-  address: String;
-  location: { lat: String; lng: String };
-  creator: String;
+  title: string;
+  description: string;
+  image: string;
+  address: string;
+  location: { lat: string; lng: string };
+  creator: string;
 };
 
 export interface AuthContextInterface {
