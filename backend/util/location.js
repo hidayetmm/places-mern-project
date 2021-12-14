@@ -23,6 +23,7 @@ async function getCoordinatesForAddress(address) {
   const coordinates = {
     lat: identifiedAddress.latitude,
     lng: identifiedAddress.longitude,
+    address: `${identifiedAddress.addressLabel}, ${identifiedAddress.city}, ${identifiedAddress.state}, ${identifiedAddress.country}`,
   };
   return coordinates;
 }

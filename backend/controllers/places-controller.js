@@ -91,7 +91,7 @@ const createPlace = async (req, res, next) => {
   const createdPlace = new Place({
     title,
     description,
-    address,
+    address: coordinates.address,
     location: coordinates,
     image: "http://localhost:7070/" + req.file.path,
     creator,

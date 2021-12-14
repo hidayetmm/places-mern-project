@@ -57,24 +57,13 @@ const AddPlaceModal: FC<{
       .then((res: AxiosResponse) => {
         setLoading(false);
         console.log(res);
-        // if (res.data.user) {
-        //   setIsAddPlaceModalOpened(false);
+        if (res.data.place) {
+          setIsAddPlaceModalOpened(false);
 
-        //   const newUserData = {
-        //     id: res.data.user.id,
-        //     username: res.data.user.name,
-        //     email: res.data.user.email,
-        //     accessToken: "DUMMYACCESSTOKEN",
-        //     image: res.data.user.image,
-        //     isLoggedIn: true,
-        //   };
-        //   //   setUserData(newUserData);
-        //   localStorage.setItem("userData", JSON.stringify(newUserData));
-
-        //   notifications.showNotification({
-        //     message: `Welcome @${res.data.user.name}!`,
-        //   });
-        // }
+          notifications.showNotification({
+            message: "Place successfully added!",
+          });
+        }
       })
       .catch((err: AxiosError) => {
         setLoading(false);

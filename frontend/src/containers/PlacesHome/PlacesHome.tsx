@@ -78,6 +78,15 @@ const PlacesHome = () => {
               >
                 {place.description}
               </Text>
+              <Text
+                lineClamp={3}
+                size="sm"
+                style={{
+                  color: secondaryColor,
+                }}
+              >
+                {place.address}
+              </Text>
               <Button
                 variant="light"
                 color="blue"
