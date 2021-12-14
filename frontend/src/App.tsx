@@ -53,7 +53,7 @@ function App() {
     } else if (colorScheme === "light") {
       document.body.style.backgroundColor = colors.gray[0];
     }
-  }, [colorScheme]);
+  }, [colorScheme, colors]);
 
   return (
     <AuthProvider value={contextData}>

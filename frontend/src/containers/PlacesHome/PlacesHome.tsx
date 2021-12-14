@@ -13,9 +13,11 @@ import {
 import classes from "./PlacesHome.module.scss";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { useEffect, useState } from "react";
+import { useNotifications } from "@mantine/notifications";
 
 const PlacesHome = () => {
   const theme = useMantineTheme();
+  const notifications = useNotifications();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
@@ -31,16 +33,33 @@ const PlacesHome = () => {
   const [places, setPlaces] = useState([]);
   useEffect(() => {
     fetchPlaces();
-  }, []);
+  });
 
   const fetchPlaces = async () => {
     try {
       const fetchedPlaces: AxiosResponse = await axios.get("/places");
       if (!places) {
-        return alert("Couldn't find any place.");
+        return notifications.showNotification({
+          message: "Couldn't find any place",
+          color: "red",
+        });
       }
-      setPlaces(fetchedPlaces.data?.places);
-    } catch (err) {}
+
+      setPlaces(fetchedPlaces.data?.places.reverse());
+    } catch (err: AxiosError | any) {
+      if (axios.isAxiosError(err)) {
+        console.log(err?.response);
+        notifications.showNotification({
+          message: err.response?.data.message,
+          color: "red",
+        });
+      } else {
+        notifications.showNotification({
+          message: err?.message,
+          color: "red",
+        });
+      }
+    }
   };
 
   return (

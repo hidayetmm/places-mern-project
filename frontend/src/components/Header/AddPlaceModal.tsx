@@ -1,13 +1,6 @@
 import { FC, useState, useContext, SetStateAction, Dispatch } from "react";
 import axios, { AxiosResponse, AxiosError } from "axios";
-import {
-  TextInput,
-  Group,
-  Text,
-  Checkbox,
-  Button,
-  Textarea,
-} from "@mantine/core";
+import { TextInput, Group, Text, Button, Textarea } from "@mantine/core";
 import { useNotifications } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/hooks";

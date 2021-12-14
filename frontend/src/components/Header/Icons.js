@@ -3,7 +3,7 @@ export const DarkModeIcon = () => (
   <span className="material-icons-outlined">dark_mode</span>
 );
 export const LightModeIcon = () => (
-  <span class="material-icons-outlined">light_mode</span>
+  <span className="material-icons-outlined">light_mode</span>
 );
 export const UserIcon = () => (
   <span className="material-icons-outlined">person</span>

@@ -96,10 +96,10 @@ const HeaderComponent = () => {
                 filter: "brightness(1.1)",
               },
             },
-            "div:nth-last-child(-n+2)": {
+            "div:nth-last-of-type(-n+2)": {
               transition: "color 150ms ease",
               "&:hover": {
-                "div:nth-last-child(-n+2)": {
+                "div:nth-last-of-type(-n+2)": {
                   color:
                     theme.colorScheme === "dark"
                       ? theme.colors.gray[4]
@@ -221,11 +221,6 @@ const HeaderComponent = () => {
     if (profileImage) {
       formData.append("image", profileImage[0]);
     }
-    const body = {
-      name: values.username,
-      email: values.email,
-      password: values.password,
-    };
 
     const url = "/users/signup";
     axios
