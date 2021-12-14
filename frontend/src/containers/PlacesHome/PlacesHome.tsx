@@ -50,7 +50,12 @@ const PlacesHome = () => {
           <Col key={place.id} span={3}>
             <Card shadow="sm" padding="lg">
               <Card.Section>
-                <Image src={place.image} height={160} alt="Norway" />
+                <Image
+                  src={place.image}
+                  height={180}
+                  alt={place.title}
+                  fit="contain"
+                />
               </Card.Section>
               <Group
                 position="apart"
@@ -72,9 +77,6 @@ const PlacesHome = () => {
                 }}
               >
                 {place.description}
-                With Fjord Tours you can explore more of the magical fjord
-                landscapes with tours and activities on and around the fjords of
-                Norway
               </Text>
               <Button
                 variant="light"
