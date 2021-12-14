@@ -10,6 +10,7 @@ export type User = {
 };
 
 export type Place = {
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -21,6 +22,8 @@ export type Place = {
 export interface AuthContextInterface {
   userData: User;
   setUserData: (values: User) => void;
+  places: Place[];
+  setPlaces: (values: Place[]) => void;
   userPlaces: Place[];
   setUserPlaces: (values: Place[]) => void;
 }
@@ -35,6 +38,8 @@ export const defaultState = {
     isLoggedIn: false,
   },
   setUserData: () => {},
+  places: [],
+  setPlaces: () => {},
   userPlaces: [],
   setUserPlaces: () => {},
 };

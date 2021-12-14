@@ -12,28 +12,20 @@ import {
 } from "@mantine/core";
 import classes from "./PlacesHome.module.scss";
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
 import { useNotifications } from "@mantine/notifications";
+import { AuthContext, Place } from "../../context/AuthContext";
 
 const PlacesHome = () => {
+  const { places, setPlaces } = useContext(AuthContext);
   const theme = useMantineTheme();
   const notifications = useNotifications();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
-  type PlaceType = {
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-    address: string;
-    location: {};
-    creator: string;
-  };
-  const [places, setPlaces] = useState([]);
   useEffect(() => {
     fetchPlaces();
-  });
+  }, []);
 
   const fetchPlaces = async () => {
     try {
@@ -65,7 +57,7 @@ const PlacesHome = () => {
   return (
     <Container className={classes.container} size="xl">
       <Grid>
-        {places.map((place: PlaceType) => (
+        {places.map((place: Place) => (
           <Col key={place.id} span={3}>
             <Card shadow="sm" padding="lg">
               <Card.Section>

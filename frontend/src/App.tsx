@@ -35,6 +35,12 @@ function App() {
         ...prevState,
         userData: values,
       })),
+    places: [],
+    setPlaces: (values: Place[]): void =>
+      setContextData((prevState: AuthContextInterface) => ({
+        ...prevState,
+        places: values,
+      })),
     userPlaces: [],
     setUserPlaces: (values: Place[]): void =>
       setContextData((prevState: AuthContextInterface) => ({
