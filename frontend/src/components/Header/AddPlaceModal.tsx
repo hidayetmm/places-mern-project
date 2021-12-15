@@ -61,17 +61,23 @@ const AddPlaceModal: FC<{
       })
       .catch((err: AxiosError) => {
         setLoading(false);
-        console.log(err);
-        if (err.response?.data.message) {
+        if (err.response?.data.includes("LIMIT_FILE_SIZE")) {
           notifications.showNotification({
-            message: err.response?.data.message,
+            message: "File size exceeded.",
             color: "red",
           });
         } else {
-          notifications.showNotification({
-            message: err.message,
-            color: "red",
-          });
+          if (err.response?.data.message) {
+            notifications.showNotification({
+              message: err.response?.data.message,
+              color: "red",
+            });
+          } else {
+            notifications.showNotification({
+              message: err.message,
+              color: "red",
+            });
+          }
         }
       });
   };
