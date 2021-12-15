@@ -98,8 +98,8 @@ const PlacesHome = () => {
                   {place.description}
                 </Text>
                 <Text
-                  lineClamp={3}
-                  size="sm"
+                  lineClamp={1}
+                  size="xs"
                   style={{
                     color: secondaryColor,
                   }}
