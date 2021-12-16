@@ -36,7 +36,16 @@
 }
 
 .image {
+  position: relative;
+  border: 2px dashed #5c5f66;
+  img {
+    max-height: 90%;
+    max-width: 90%;
+    transition: filter 150ms;
+  }
   &:hover {
-    filter: brightness(30%);
+    img {
+      filter: brightness(30%);
+    }
   }
 }

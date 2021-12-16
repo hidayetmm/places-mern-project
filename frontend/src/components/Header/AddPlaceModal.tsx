@@ -27,6 +27,7 @@ const AddPlaceModal: FC<{
     string | null | ArrayBuffer
   >("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [deleteIconVisible, setDeleteIconVisible] = useState<boolean>(false);
   const { userData, setFetchPlacesToggle } = useContext(AuthContext);
 
   const notifications = useNotifications();
@@ -137,24 +138,30 @@ const AddPlaceModal: FC<{
               className={classes.textInput}
               id="2"
               required
+              maxRows={2}
               label="Description"
               {...placeForm.getInputProps("description")}
             />
           </Group>
           {placeImage ? (
-            <Center style={{ position: "relative" }}>
+            <Center
+              className={classes.image}
+              onMouseEnter={() => setDeleteIconVisible(true)}
+              onMouseLeave={() => setDeleteIconVisible(false)}
+            >
               <img
-                className={classes.image}
-                style={{ position: "absolute", maxHeight: "100%" }}
+                style={{ position: "absolute" }}
                 src={
                   typeof placePreviewImage === "string" ? placePreviewImage : ""
                 }
               />
-              <div style={{ cursor: "pointer" }}>
-                <ActionIcon>
-                  <DeleteIcon />
-                </ActionIcon>
-              </div>
+              {deleteIconVisible && (
+                <div style={{ cursor: "pointer" }}>
+                  <ActionIcon onClick={() => setPlaceImage(undefined)}>
+                    <DeleteIcon />
+                  </ActionIcon>
+                </div>
+              )}
             </Center>
           ) : (
             <Dropzone
@@ -171,7 +178,7 @@ const AddPlaceModal: FC<{
                 setPlaceImage(files);
               }}
               maxSize={3 * 1024 ** 2}
-              accept={IMAGE_MIME_TYPE}
+              accept={["image/png", "image/jpeg", "image/jpg"]}
             >
               {(status) => (
                 <Group
@@ -191,10 +198,6 @@ const AddPlaceModal: FC<{
                   </div>
                   <div>
                     <Text inline>Drag image here or click to select</Text>
-                    {/* <Text size="sm" color="dimmed" inline mt={7}>
-                    Attach as many files as you like, each file should not
-                    exceed 5mb
-                  </Text> */}
                   </div>
                 </Group>
               )}
