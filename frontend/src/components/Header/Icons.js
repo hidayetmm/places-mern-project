@@ -29,3 +29,6 @@ export const AddIcon = () => (
 export const PlaceIcon = () => (
   <span className="material-icons-outlined">image</span>
 );
+export const DeleteIcon = () => (
+  <span className="material-icons-outlined">delete</span>
+);

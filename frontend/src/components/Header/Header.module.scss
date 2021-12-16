@@ -34,3 +34,9 @@
     transform: scale(1.7);
   }
 }
+
+.image {
+  &:hover {
+    filter: brightness(30%);
+  }
+}

@@ -1,12 +1,23 @@
 import { FC, useState, useContext, SetStateAction, Dispatch } from "react";
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { TextInput, Group, Text, Button, Textarea, Image } from "@mantine/core";
+import {
+  TextInput,
+  Group,
+  Text,
+  Button,
+  Textarea,
+  Image,
+  Center,
+  ActionIcon,
+  Overlay,
+} from "@mantine/core";
 import { useNotifications } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/hooks";
 import { PlaceIcon } from "./Icons";
 import classes from "./Header.module.scss";
 import { AuthContext } from "../../context/AuthContext";
+import { DeleteIcon } from "./Icons";
 
 const AddPlaceModal: FC<{
   setIsAddPlaceModalOpened: Dispatch<SetStateAction<boolean>>;
@@ -131,22 +142,20 @@ const AddPlaceModal: FC<{
             />
           </Group>
           {placeImage ? (
-            <div>
-              <Image
-                fit="contain"
-                styles={{
-                  root: {
-                    maxHeight: 130,
-                    minWidth: 50,
-                    width: 100,
-                    height: "100%",
-                  },
-                }}
+            <Center style={{ position: "relative" }}>
+              <img
+                className={classes.image}
+                style={{ position: "absolute", maxHeight: "100%" }}
                 src={
                   typeof placePreviewImage === "string" ? placePreviewImage : ""
                 }
               />
-            </div>
+              <div style={{ cursor: "pointer" }}>
+                <ActionIcon>
+                  <DeleteIcon />
+                </ActionIcon>
+              </div>
+            </Center>
           ) : (
             <Dropzone
               styles={{
