@@ -86,26 +86,18 @@ const HeaderComponent = () => {
       }}
       control={
         <UnstyledButton
-          onClick={() => console.log("try focusing button with tab")}
           sx={(theme) => ({
-            img: {
-              transition: "all 150ms ease",
+            padding: 6,
+            borderRadius: 4,
+            "&:active": {
+              WebkitTransform: "translateY(1px)",
+              MozTransform: "translateY(1px)",
+              msTransform: "translateY(1px)",
+              transform: "translateY(1px)",
             },
             "&:hover": {
-              img: {
-                filter: "brightness(1.1)",
-              },
-            },
-            "div:nth-last-of-type(-n+2)": {
-              transition: "color 150ms ease",
-              "&:hover": {
-                "div:nth-last-of-type(-n+2)": {
-                  color:
-                    theme.colorScheme === "dark"
-                      ? theme.colors.gray[4]
-                      : theme.colors.gray[1],
-                },
-              },
+              backgroundColor:
+                theme.colorScheme === "dark" ? "#141517" : theme.colors.gray[0],
             },
           })}
         >
