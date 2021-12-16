@@ -1,6 +1,6 @@
 import { FC, useState, useContext, SetStateAction, Dispatch } from "react";
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { TextInput, Group, Text, Button, Textarea } from "@mantine/core";
+import { TextInput, Group, Text, Button, Textarea, Image } from "@mantine/core";
 import { useNotifications } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useForm } from "@mantine/hooks";
@@ -12,6 +12,9 @@ const AddPlaceModal: FC<{
   setIsAddPlaceModalOpened: Dispatch<SetStateAction<boolean>>;
 }> = ({ setIsAddPlaceModalOpened }) => {
   const [placeImage, setPlaceImage] = useState<File[]>();
+  const [placePreviewImage, setPlacePreviewImage] = useState<
+    string | null | ArrayBuffer
+  >("");
   const [loading, setLoading] = useState<boolean>(false);
   const { userData, setFetchPlacesToggle } = useContext(AuthContext);
 
@@ -82,6 +85,17 @@ const AddPlaceModal: FC<{
       });
   };
 
+  const previewHandler = (file: File) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      setPlacePreviewImage(reader.result);
+    };
+    reader.onerror = function (error) {
+      console.log("Error: ", error);
+    };
+  };
+
   return (
     <div>
       <form onSubmit={placeForm.onSubmit(addPlaceHandler)}>
@@ -116,45 +130,67 @@ const AddPlaceModal: FC<{
               {...placeForm.getInputProps("description")}
             />
           </Group>
-          <Dropzone
-            styles={{
-              root: {
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              },
-            }}
-            multiple={false}
-            onDrop={(files) => setPlaceImage(files)}
-            maxSize={3 * 1024 ** 2}
-            accept={IMAGE_MIME_TYPE}
-          >
-            {(status) => (
-              <Group
-                position="center"
-                spacing="xl"
-                style={{ pointerEvents: "none" }}
-              >
-                <div className={classes.imageIcon}>
-                  <PlaceIcon
-                  // status={status}
-                  // style={{
-                  //   width: 80,
-                  //   height: 80,
-                  //   color: getIconColor(status, theme),
-                  // }}
-                  />
-                </div>
-                <div>
-                  <Text inline>Drag image here or click to select</Text>
-                  {/* <Text size="sm" color="dimmed" inline mt={7}>
+          {placeImage ? (
+            <div>
+              <Image
+                fit="contain"
+                styles={{
+                  root: {
+                    maxHeight: 130,
+                    minWidth: 50,
+                    width: 100,
+                    height: "100%",
+                  },
+                }}
+                src={
+                  typeof placePreviewImage === "string" ? placePreviewImage : ""
+                }
+              />
+            </div>
+          ) : (
+            <Dropzone
+              styles={{
+                root: {
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              }}
+              multiple={false}
+              onDrop={(files) => {
+                previewHandler(files[0]);
+                setPlaceImage(files);
+              }}
+              maxSize={3 * 1024 ** 2}
+              accept={IMAGE_MIME_TYPE}
+            >
+              {(status) => (
+                <Group
+                  position="center"
+                  spacing="xl"
+                  style={{ pointerEvents: "none" }}
+                >
+                  <div className={classes.imageIcon}>
+                    <PlaceIcon
+                    // status={status}
+                    // style={{
+                    //   width: 80,
+                    //   height: 80,
+                    //   color: getIconColor(status, theme),
+                    // }}
+                    />
+                  </div>
+                  <div>
+                    <Text inline>Drag image here or click to select</Text>
+                    {/* <Text size="sm" color="dimmed" inline mt={7}>
                     Attach as many files as you like, each file should not
                     exceed 5mb
                   </Text> */}
-                </div>
-              </Group>
-            )}
-          </Dropzone>
+                  </div>
+                </Group>
+              )}
+            </Dropzone>
+          )}
         </Group>
 
         <Button loading={loading} style={{ float: "right" }} type="submit">
