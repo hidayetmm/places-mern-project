@@ -85,6 +85,9 @@ const UserProfile = () => {
 
   return (
     <Container className={classes.container} size="xl">
+      <div className={classes.topBadge}>
+        <Badge size="xl">{username}</Badge>
+      </div>
       <Grid ref={containerRef}>
         {userPlaces?.map((place: Place) => (
           <Col
@@ -112,7 +115,7 @@ const UserProfile = () => {
                   variant="light"
                   leftSection={<BadgeAvatar imgUrl={place.creator.image} />}
                 >
-                  {place.creator.name}
+                  {username}
                 </Badge>
               </Group>
               <Text
