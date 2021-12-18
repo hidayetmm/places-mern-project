@@ -32,7 +32,7 @@ const updatePlaceValidations = [
 
 router.get("/", getAllPlaces);
 router.get("/:pid", getPlaceById);
-router.get("/user/:uid", getPlacesByUserId);
+router.get("/user/:username", getPlacesByUserId);
 router.post(
   "/",
   fileUpload.single("image"),

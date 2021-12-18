@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const getAllPlaces = async (req, res, next) => {
   let places;
   try {
-    places = await Place.find();
+    places = await Place.find().populate("creator");
   } catch (err) {
     const error = new HttpError("Could not find any place.", 404);
     return next(error);
@@ -48,11 +48,11 @@ const getPlaceById = async (req, res, next) => {
 };
 
 const getPlacesByUserId = async (req, res, next) => {
-  const userId = req.params.uid;
+  const username = req.params.username;
 
   let userWithPlaces;
   try {
-    userWithPlaces = await User.findById(userId).populate("places");
+    userWithPlaces = await User.findOne({ name: username }).populate("places");
   } catch (err) {
     const error = new HttpError(
       "Fetching places failed, please try again.",

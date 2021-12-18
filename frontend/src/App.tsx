@@ -12,7 +12,7 @@ import "./App.css";
 import Axios from "axios";
 import { AppShell, useMantineTheme } from "@mantine/core";
 import Footer from "./components/Footer/Footer";
-import Profile from "./containers/Profile/Profile";
+import UserProfile from "./containers/UserProfile/UserProfile";
 
 function App() {
   Axios.defaults.baseURL = "http://localhost:7070/api/";
@@ -84,7 +84,7 @@ function App() {
         <div className="main">
           <Routes>
             <Route path="/" element={<PlacesHome />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/:username" element={<UserProfile />} />
           </Routes>
         </div>
         <Footer />

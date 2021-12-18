@@ -1,33 +1,35 @@
+import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import {
   Badge,
   Button,
   Card,
-  Container,
-  Group,
-  Image,
-  Text,
-  Grid,
   Col,
-  useMantineTheme,
+  Container,
+  Grid,
+  Group,
+  Text,
+  Image,
   Avatar,
+  useMantineTheme,
 } from "@mantine/core";
-import classes from "./PlacesHome.module.scss";
-import axios, { AxiosResponse, AxiosError } from "axios";
-import { useEffect, useContext, useRef } from "react";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { Place } from "../../context/AuthContext";
 import { useNotifications } from "@mantine/notifications";
-import { AuthContext, Place } from "../../context/AuthContext";
 import { spring } from "react-flip-toolkit";
+import classes from "../PlacesHome/PlacesHome.module.scss";
 
-const PlacesHome = () => {
-  const { places, setPlaces, fetchPlacesToggle } = useContext(AuthContext);
-  const theme = useMantineTheme();
+const UserProfile = () => {
+  const { username } = useParams<"username">();
+  const [userPlaces, setUserPlaces] = useState<Place[]>();
   const notifications = useNotifications();
+  const containerRef: any = useRef(null);
+  const theme = useMantineTheme();
   const secondaryColor =
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
-  const containerRef: any = useRef(null);
   useEffect(() => {
-    fetchPlaces().then(() => {
+    getUserPlaces().then(() => {
       const boxes = [...containerRef.current.querySelectorAll(".boxItem")];
       boxes.forEach((el, i) => {
         spring({
@@ -48,34 +50,24 @@ const PlacesHome = () => {
         });
       });
     });
-  }, [fetchPlacesToggle]);
+  }, []);
 
-  const fetchPlaces = async () => {
+  const getUserPlaces = async () => {
+    const url = `places/user/${username}`;
+
     try {
-      const fetchedPlaces: AxiosResponse = await axios.get("/places");
-
-      if (!fetchedPlaces) {
-        return notifications.showNotification({
-          message: "Couldn't find any place",
-          color: "red",
-        });
-      }
-
-      setPlaces(fetchedPlaces.data?.places.reverse());
-      console.log(fetchedPlaces);
-    } catch (err: AxiosError | any) {
-      if (axios.isAxiosError(err)) {
-        console.log(err?.response);
-        notifications.showNotification({
-          message: err.response?.data.message,
-          color: "red",
-        });
+      const response: AxiosResponse = await axios.get(url);
+      const places: Place[] = response.data?.places;
+      if (places) {
+        setUserPlaces(places);
       } else {
-        notifications.showNotification({
-          message: err?.message,
-          color: "red",
-        });
+        throw new Error("Something went wrong.");
       }
+    } catch (err: AxiosError | any) {
+      notifications.showNotification({
+        message: err.message,
+        color: "red",
+      });
     }
   };
 
@@ -94,7 +86,7 @@ const PlacesHome = () => {
   return (
     <Container className={classes.container} size="xl">
       <Grid ref={containerRef}>
-        {places.map((place: Place) => (
+        {userPlaces?.map((place: Place) => (
           <Col
             key={place.id}
             span={3}
@@ -160,4 +152,4 @@ const PlacesHome = () => {
   );
 };
 
-export default PlacesHome;
+export default UserProfile;

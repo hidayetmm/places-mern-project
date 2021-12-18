@@ -16,7 +16,7 @@ export type Place = {
   image: string;
   address: string;
   location: { lat: string; lng: string };
-  creator: string;
+  creator: { id: string; email: string; image: string; name: string };
 };
 
 export interface AuthContextInterface {
