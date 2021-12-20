@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   Badge,
@@ -12,16 +12,30 @@ import {
   Image,
   Avatar,
   useMantineTheme,
+  ActionIcon,
+  Popover,
 } from "@mantine/core";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Place } from "../../context/AuthContext";
+import { AuthContext, Place } from "../../context/AuthContext";
 import { useNotifications } from "@mantine/notifications";
 import { spring } from "react-flip-toolkit";
 import classes from "../PlacesHome/PlacesHome.module.scss";
+import { DeleteIcon, EditIcon } from "../../components/Header/Icons";
 
 const UserProfile = () => {
+  type ProfileData = {
+    email: string;
+    image: string;
+    name: string;
+    password: string;
+  };
+  const { userData, fetchPlacesToggle, setFetchPlacesToggle } =
+    useContext(AuthContext);
   const { username } = useParams<"username">();
   const [userPlaces, setUserPlaces] = useState<Place[]>();
+  const [userProfileData, setUserProfileData] = useState<ProfileData>();
+  const [isDeletePopoverOpened, setIsDeletePopoverOpened] =
+    useState<string>("");
   const notifications = useNotifications();
   const containerRef: any = useRef(null);
   const theme = useMantineTheme();
@@ -50,18 +64,38 @@ const UserProfile = () => {
         });
       });
     });
-  }, []);
+  }, [fetchPlacesToggle]);
 
   const getUserPlaces = async () => {
     const url = `places/user/${username}`;
 
     try {
       const response: AxiosResponse = await axios.get(url);
-      const places: Place[] = response.data?.places;
-      if (places) {
+      const { places, ...userProfile } = response.data?.data;
+      if (places || userProfile) {
         setUserPlaces(places);
+        setUserProfileData(userProfile);
       } else {
         throw new Error("Something went wrong.");
+      }
+    } catch (err: AxiosError | any) {
+      notifications.showNotification({
+        message: err.message,
+        color: "red",
+      });
+    }
+  };
+
+  const deletePlaceHandler = async (placeId: string) => {
+    const url = `places/${placeId}`;
+
+    try {
+      const response: AxiosResponse = await axios.delete(url);
+      if (response) {
+        setFetchPlacesToggle();
+        notifications.showNotification({
+          message: response.data.message,
+        });
       }
     } catch (err: AxiosError | any) {
       notifications.showNotification({
@@ -78,80 +112,119 @@ const UserProfile = () => {
         alt="Avatar for badge"
         size={17}
         style={{ marginRight: 5 }}
-        src={imgUrl}
+        src={process.env.REACT_APP_SERVER_LINK + imgUrl}
       />
     );
   };
 
+  const popoverHandler = (placeId: string) => {
+    if (isDeletePopoverOpened === placeId) {
+      setIsDeletePopoverOpened("");
+    } else {
+      setIsDeletePopoverOpened(placeId);
+    }
+  };
+
   return (
-    <Container className={classes.container} size="xl">
-      <div className={classes.topBadge}>
-        <Badge size="xl">{username}</Badge>
-      </div>
-      <Grid ref={containerRef}>
-        {userPlaces?.map((place: Place) => (
-          <Col
-            key={place.id}
-            span={3}
-            className={`boxItem ${classes.opacity_0}`}
-          >
-            <Card shadow="sm" padding="lg">
-              <Card.Section>
-                <Image
-                  src={place.image}
-                  height={180}
-                  alt={place.title}
-                  fit="contain"
-                />
-              </Card.Section>
-              <Group
-                position="apart"
-                style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
+    <>
+      {userProfileData && (
+        <Container className={classes.container} size="xl">
+          <div className={classes.topBadge}>
+            <Badge size="xl">{username}</Badge>
+          </div>
+          <Grid ref={containerRef}>
+            {userPlaces?.map((place: Place) => (
+              <Col
+                key={place.id}
+                span={3}
+                className={`boxItem ${classes.opacity_0}`}
               >
-                <Text weight={500}>{place.title}</Text>
-                <Badge
-                  styles={{ root: { padding: "0 4px" } }}
-                  color="pink"
-                  variant="light"
-                  leftSection={<BadgeAvatar imgUrl={place.creator.image} />}
-                >
-                  {username}
-                </Badge>
-              </Group>
-              <Text
-                lineClamp={3}
-                size="sm"
-                style={{
-                  color: secondaryColor,
-                  lineHeight: 1.5,
-                  minHeight: 65,
-                  maxHeight: 65,
-                }}
-              >
-                {place.description}
-              </Text>
-              <Text
-                lineClamp={1}
-                size="xs"
-                style={{
-                  color: secondaryColor,
-                }}
-              >
-                {place.address}
-              </Text>
-              <Button
-                variant="light"
-                color="blue"
-                fullWidth
-                style={{ marginTop: 14 }}
-              >
-                View
-              </Button>
-            </Card>
-          </Col>
-        ))}
-      </Grid>
-    </Container>
+                <Card shadow="sm" padding="lg">
+                  <Card.Section>
+                    <Image
+                      src={process.env.REACT_APP_SERVER_LINK + place.image}
+                      height={180}
+                      alt={place.title}
+                      fit="contain"
+                    />
+                  </Card.Section>
+                  <Group
+                    position="apart"
+                    style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
+                  >
+                    <Text weight={500}>{place.title}</Text>
+                    <Badge
+                      styles={{ root: { padding: "0 4px" } }}
+                      color="pink"
+                      variant="light"
+                      leftSection={
+                        <BadgeAvatar imgUrl={userProfileData.image} />
+                      }
+                    >
+                      {username}
+                    </Badge>
+                  </Group>
+                  <Text
+                    lineClamp={3}
+                    size="sm"
+                    style={{
+                      color: secondaryColor,
+                      lineHeight: 1.5,
+                      minHeight: 65,
+                      maxHeight: 65,
+                    }}
+                  >
+                    {place.description}
+                  </Text>
+                  <Text
+                    lineClamp={1}
+                    size="xs"
+                    style={{
+                      color: secondaryColor,
+                    }}
+                  >
+                    {place.address}
+                  </Text>
+                  <Group style={{ paddingTop: 14 }}>
+                    <Button
+                      variant="light"
+                      color="blue"
+                      style={{ flexGrow: 1 }}
+                    >
+                      View
+                    </Button>
+                    {userData.username === userProfileData.name && (
+                      <>
+                        <ActionIcon>
+                          <EditIcon />
+                        </ActionIcon>
+                        <Popover
+                          onClose={() => setIsDeletePopoverOpened("")}
+                          position="bottom"
+                          target={
+                            <ActionIcon
+                              onClick={() => popoverHandler(place.id)}
+                            >
+                              <DeleteIcon />
+                            </ActionIcon>
+                          }
+                          opened={isDeletePopoverOpened === place.id}
+                        >
+                          <Text size="sm">Are you sure?</Text>
+                          <Button onClick={() => deletePlaceHandler(place.id)}>
+                            Delete
+                          </Button>
+                        </Popover>
+                      </>
+                    )}
+                  </Group>
+                </Card>
+              </Col>
+            ))}
+          </Grid>
+        </Container>
+      )}
+    </>
   );
 };
 

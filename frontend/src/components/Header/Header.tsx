@@ -108,7 +108,11 @@ const HeaderComponent = () => {
                 {userData.email}
               </Text>
             </div>
-            <Avatar src={userData.image} size={40} color="blue" />
+            <Avatar
+              src={process.env.REACT_APP_SERVER_LINK + userData.image}
+              size={40}
+              color="blue"
+            />
           </Group>
         </UnstyledButton>
       }

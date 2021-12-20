@@ -75,6 +75,7 @@ const AddPlaceModal: FC<{
         }
       })
       .catch((err: AxiosError) => {
+        console.log(err);
         setLoading(false);
         if (err.response?.data.includes("LIMIT_FILE_SIZE")) {
           notifications.showNotification({

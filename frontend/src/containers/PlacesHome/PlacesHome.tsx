@@ -17,6 +17,7 @@ import { useEffect, useContext, useRef } from "react";
 import { useNotifications } from "@mantine/notifications";
 import { AuthContext, Place } from "../../context/AuthContext";
 import { spring } from "react-flip-toolkit";
+import { Link } from "react-router-dom";
 
 const PlacesHome = () => {
   const { places, setPlaces, fetchPlacesToggle } = useContext(AuthContext);
@@ -86,7 +87,7 @@ const PlacesHome = () => {
         alt="Avatar for badge"
         size={17}
         style={{ marginRight: 5 }}
-        src={imgUrl}
+        src={process.env.REACT_APP_SERVER_LINK + imgUrl}
       />
     );
   };
@@ -103,7 +104,7 @@ const PlacesHome = () => {
             <Card shadow="sm" padding="lg">
               <Card.Section>
                 <Image
-                  src={place.image}
+                  src={process.env.REACT_APP_SERVER_LINK + place.image}
                   height={180}
                   alt={place.title}
                   fit="contain"
@@ -115,10 +116,12 @@ const PlacesHome = () => {
               >
                 <Text weight={500}>{place.title}</Text>
                 <Badge
-                  styles={{ root: { padding: "0 4px" } }}
+                  styles={{ root: { padding: "0 4px", cursor: "pointer" } }}
                   color="pink"
                   variant="light"
                   leftSection={<BadgeAvatar imgUrl={place.creator.image} />}
+                  component={Link}
+                  to={`${place.creator.name}`}
                 >
                   {place.creator.name}
                 </Badge>

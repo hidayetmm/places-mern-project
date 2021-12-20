@@ -59,7 +59,7 @@ const signupUser = async (req, res, next) => {
     name,
     email,
     image: req.file
-      ? "http://localhost:7070/" + req.file.path
+      ? req.file.path
       : "http://localhost:7070/uploads/images/default-user.png",
     password,
     places: [],

@@ -66,10 +66,10 @@ const getPlacesByUserId = async (req, res, next) => {
       new HttpError("Could not find a place with that user id.", 404)
     );
   }
+
+  const { places, ...rest } = userWithPlaces;
   res.json({
-    places: userWithPlaces.places.map((place) =>
-      place.toObject({ getters: true })
-    ),
+    data: userWithPlaces.toObject({ getters: true }),
   });
 };
 
@@ -94,7 +94,7 @@ const createPlace = async (req, res, next) => {
     description,
     address: coordinates.address,
     location: coordinates,
-    image: "http://localhost:7070/" + req.file.path,
+    image: req.file.path,
     creator,
   });
 
