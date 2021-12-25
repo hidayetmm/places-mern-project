@@ -161,7 +161,6 @@ const HeaderComponent = () => {
   );
 
   const loginHandler = async (values: { email: string; password: string }) => {
-    console.log(values);
     setLoading(true);
 
     const url = "/users/login";
@@ -169,7 +168,7 @@ const HeaderComponent = () => {
     try {
       const response: AxiosResponse = await axios.post(url, values);
       setLoading(false);
-      console.log(response.data.user);
+      console.log(response.data);
       setIsLoginLogoutModalOpened(false);
 
       const newUserData = {

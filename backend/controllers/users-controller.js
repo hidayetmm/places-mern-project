@@ -148,7 +148,10 @@ const loginUser = async (req, res, next) => {
     return next(error);
   }
 
-  return res.json({ user: { ...existingUser, token }, message: "Logged in!" });
+  return res.json({
+    user: { ...existingUser.toObject({ getters: true }), token },
+    message: "Logged in!",
+  });
 };
 
 exports.getAllUsers = getAllUsers;
