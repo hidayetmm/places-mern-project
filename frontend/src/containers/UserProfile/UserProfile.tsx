@@ -75,6 +75,7 @@ const UserProfile = () => {
       if (places || userProfile) {
         setUserPlaces(places);
         setUserProfileData(userProfile);
+        console.log(userProfile);
       } else {
         throw new Error("Something went wrong.");
       }
@@ -88,9 +89,10 @@ const UserProfile = () => {
 
   const deletePlaceHandler = async (placeId: string) => {
     const url = `places/${placeId}`;
+    const headers = { Authorization: `Bearer ${userData.accessToken}` };
 
     try {
-      const response: AxiosResponse = await axios.delete(url);
+      const response: AxiosResponse = await axios.delete(url, { headers });
       if (response) {
         setFetchPlacesToggle();
         notifications.showNotification({

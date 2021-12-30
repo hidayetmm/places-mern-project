@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const getAllUsers = async (req, res, next) => {
   let users;
   try {
-    users = await User.find({}, "-password");
+    users = await User.find();
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, please try again later."
@@ -106,7 +106,7 @@ const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
   let existingUser;
   try {
-    existingUser = await User.findOne({ email });
+    existingUser = await User.findOne({ email }).select("+password");
   } catch (err) {
     const error = new HttpError(
       "Logging in failed, please try again later.",

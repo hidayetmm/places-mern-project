@@ -57,11 +57,11 @@ const AddPlaceModal: FC<{
       formData.append("image", placeImage[0]);
     }
 
-    const header = { Authorization: `Bearer ${userData.accessToken}` };
+    const headers = { Authorization: `Bearer ${userData.accessToken}` };
 
     const url = "places";
     axios
-      .post(url, formData, { headers: header })
+      .post(url, formData, { headers })
       .then((res: AxiosResponse) => {
         setLoading(false);
         setFetchPlacesToggle();
