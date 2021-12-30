@@ -87,7 +87,7 @@ const signupUser = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign({ userId: createdUser.id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
+      expiresIn: "24h",
     });
   } catch (err) {
     const error = new HttpError(
@@ -140,10 +140,7 @@ const loginUser = async (req, res, next) => {
 
   let token;
   try {
-    token = jwt.sign({ userId: existingUser.id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-      // process.env.JWT_EXPIRES_IN,
-    });
+    token = jwt.sign({ userId: existingUser.id }, process.env.JWT_SECRET);
   } catch (err) {
     const error = new HttpError("Could not login, please try again.", 500);
     return next(error);

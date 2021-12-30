@@ -175,7 +175,7 @@ const HeaderComponent = () => {
         id: response.data.user.id,
         username: response.data.user.name,
         email: response.data.user.email,
-        accessToken: "DUMMYACCESSTOKEN",
+        accessToken: response.data.user.token,
         image: response.data.user.image,
         isLoggedIn: true,
       };
@@ -230,7 +230,7 @@ const HeaderComponent = () => {
             id: res.data.user.id,
             username: res.data.user.name,
             email: res.data.user.email,
-            accessToken: "DUMMYACCESSTOKEN",
+            accessToken: res.data.user.token,
             image: res.data.user.image,
             isLoggedIn: true,
           };

@@ -6,10 +6,8 @@ import {
   Text,
   Button,
   Textarea,
-  Image,
   Center,
   ActionIcon,
-  Overlay,
 } from "@mantine/core";
 import { useNotifications } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
@@ -59,9 +57,11 @@ const AddPlaceModal: FC<{
       formData.append("image", placeImage[0]);
     }
 
+    const header = { Authorization: `Bearer ${userData.accessToken}` };
+
     const url = "places";
     axios
-      .post(url, formData)
+      .post(url, formData, { headers: header })
       .then((res: AxiosResponse) => {
         setLoading(false);
         setFetchPlacesToggle();
