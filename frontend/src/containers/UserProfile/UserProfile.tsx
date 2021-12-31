@@ -43,26 +43,28 @@ const UserProfile = () => {
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
   useEffect(() => {
-    getUserPlaces().then(() => {
-      const boxes = [...containerRef.current.querySelectorAll(".boxItem")];
-      boxes.forEach((el, i) => {
-        spring({
-          config: "gentle",
-          values: {
-            translateY: [-15, 0],
-            opacity: [0, 1],
-          },
-          onUpdate: (props: any) => {
-            el.style.opacity = props.opacity;
-            el.style.transform = `translateY(${props.translateY}px)`;
-          },
-          // delay: i * 25,
-          delay: i * 100,
-          onComplete: () => {
-            // add callback logic here if necessary
-          },
+    getUserPlaces().then((places) => {
+      if (places) {
+        const boxes = [...containerRef.current.querySelectorAll(".boxItem")];
+        boxes.forEach((el, i) => {
+          spring({
+            config: "gentle",
+            values: {
+              translateY: [-15, 0],
+              opacity: [0, 1],
+            },
+            onUpdate: (props: any) => {
+              el.style.opacity = props.opacity;
+              el.style.transform = `translateY(${props.translateY}px)`;
+            },
+            // delay: i * 25,
+            delay: i * 100,
+            onComplete: () => {
+              // add callback logic here if necessary
+            },
+          });
         });
-      });
+      }
     });
   }, [fetchPlacesToggle]);
 
@@ -71,19 +73,21 @@ const UserProfile = () => {
 
     try {
       const response: AxiosResponse = await axios.get(url);
-      const { places, ...userProfile } = response.data?.data;
+      const { places, ...userProfile } = await response.data?.data;
       if (places || userProfile) {
         setUserPlaces(places);
         setUserProfileData(userProfile);
-        console.log(userProfile);
+        return places;
       } else {
         throw new Error("Something went wrong.");
       }
     } catch (err: AxiosError | any) {
-      notifications.showNotification({
-        message: err.message,
-        color: "red",
-      });
+      if (err.response.status === 404) {
+        notifications.showNotification({
+          message: "No places found.",
+          color: "red",
+        });
+      }
     }
   };
 
@@ -134,6 +138,7 @@ const UserProfile = () => {
           <div className={classes.topBadge}>
             <Badge size="xl">{username}</Badge>
           </div>
+
           <Grid ref={containerRef}>
             {userPlaces?.map((place: Place) => (
               <Col
