@@ -29,13 +29,18 @@ const UserProfile = () => {
     name: string;
     password: string;
   };
+
   const { userData, fetchPlacesToggle, setFetchPlacesToggle } =
     useContext(AuthContext);
+
   const { username } = useParams<"username">();
+
   const [userPlaces, setUserPlaces] = useState<Place[]>();
   const [userProfileData, setUserProfileData] = useState<ProfileData>();
   const [isDeletePopoverOpened, setIsDeletePopoverOpened] =
     useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
   const notifications = useNotifications();
   const containerRef: any = useRef(null);
   const theme = useMantineTheme();
@@ -92,6 +97,7 @@ const UserProfile = () => {
   };
 
   const deletePlaceHandler = async (placeId: string) => {
+    setLoading(true);
     const url = `places/${placeId}`;
     const headers = { Authorization: `Bearer ${userData.accessToken}` };
 
@@ -103,11 +109,13 @@ const UserProfile = () => {
           message: response.data.message,
         });
       }
+      setLoading(false);
     } catch (err: AxiosError | any) {
       notifications.showNotification({
         message: err.message,
         color: "red",
       });
+      setLoading(false);
     }
   };
 
@@ -218,7 +226,10 @@ const UserProfile = () => {
                           opened={isDeletePopoverOpened === place.id}
                         >
                           <Text size="sm">Are you sure?</Text>
-                          <Button onClick={() => deletePlaceHandler(place.id)}>
+                          <Button
+                            loading={loading}
+                            onClick={() => deletePlaceHandler(place.id)}
+                          >
                             Delete
                           </Button>
                         </Popover>
