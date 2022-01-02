@@ -52,7 +52,6 @@ const AddPlaceModal: FC<{
     formData.append("title", values.title);
     formData.append("description", values.description);
     formData.append("address", values.address);
-    formData.append("creator", userData.id);
     if (placeImage) {
       formData.append("image", placeImage[0]);
     }

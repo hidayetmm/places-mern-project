@@ -63,7 +63,6 @@ const PlacesHome = () => {
       }
 
       setPlaces(fetchedPlaces.data?.places.reverse());
-      console.log(fetchedPlaces);
     } catch (err: AxiosError | any) {
       if (axios.isAxiosError(err)) {
         console.log(err?.response);
