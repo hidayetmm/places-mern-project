@@ -13,14 +13,26 @@ import {
 } from "@mantine/core";
 import classes from "./PlacesHome.module.scss";
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useNotifications } from "@mantine/notifications";
 import { AuthContext, Place } from "../../context/AuthContext";
 import { spring } from "react-flip-toolkit";
 import { Link } from "react-router-dom";
+import PlaceModal from "./PlaceModal";
 
 const PlacesHome = () => {
   const { places, setPlaces, fetchPlacesToggle } = useContext(AuthContext);
+  const [place, setPlace] = useState<Place>({
+    id: "0",
+    title: "0",
+    description: "0",
+    image: "0",
+    address: "0",
+    location: { lat: "0", lng: "0" },
+    creator: { id: "0", email: "0", image: "0", name: "0" },
+  });
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
   const theme = useMantineTheme();
   const notifications = useNotifications();
   const secondaryColor =
@@ -66,10 +78,12 @@ const PlacesHome = () => {
     } catch (err: AxiosError | any) {
       if (axios.isAxiosError(err)) {
         console.log(err?.response);
-        notifications.showNotification({
-          message: err.response?.data.message,
-          color: "red",
-        });
+        if (err.response?.data.message) {
+          notifications.showNotification({
+            message: err.response?.data.message,
+            color: "red",
+          });
+        }
       } else {
         notifications.showNotification({
           message: err?.message,
@@ -91,6 +105,8 @@ const PlacesHome = () => {
     );
   };
 
+  console.log(places);
+
   return (
     <Container className={classes.container} size="xl">
       <Grid ref={containerRef}>
@@ -103,7 +119,7 @@ const PlacesHome = () => {
             <Card shadow="sm" padding="lg">
               <Card.Section>
                 <Image
-                  src={process.env.REACT_APP_SERVER_LINK + place.image}
+                  src={place.image}
                   height={180}
                   alt={place.title}
                   fit="contain"
@@ -151,12 +167,23 @@ const PlacesHome = () => {
                 color="blue"
                 fullWidth
                 style={{ marginTop: 14 }}
+                onClick={() => {
+                  setIsModalVisible(true);
+                  setPlace(place);
+                }}
               >
-                View
+                View more
               </Button>
             </Card>
           </Col>
         ))}
+        {place && (
+          <PlaceModal
+            place={place}
+            isModalVisible={isModalVisible}
+            setIsModalVisible={setIsModalVisible}
+          />
+        )}
       </Grid>
     </Container>
   );

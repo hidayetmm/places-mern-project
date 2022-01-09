@@ -5,6 +5,7 @@ const getCoordinatesForAddress = require("../util/location");
 const Place = require("../models/place");
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const ImageKit = require("imagekit");
 
 const getAllPlaces = async (req, res, next) => {
   let places;
@@ -89,12 +90,41 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
+  // Image upload
+
+  const imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: "https://ik.imagekit.io/places",
+  });
+
+  let imageUrl;
+
+  try {
+    const result = await imagekit.upload({
+      file: req.file.buffer,
+      fileName: title.toLowerCase(),
+      extensions: [
+        {
+          name: "google-auto-tagging",
+          maxTags: 5,
+          minConfidence: 95,
+        },
+      ],
+    });
+    imageUrl = result.url;
+    req.fileId = result.fileId;
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
+
   const createdPlace = new Place({
     title,
     description,
     address: coordinates.address,
     location: coordinates,
-    image: req.file.path,
+    image: imageUrl,
     creator: req.userData.userId,
   });
 
